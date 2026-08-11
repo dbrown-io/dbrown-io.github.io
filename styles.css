@@ -322,9 +322,13 @@
   }
 
   nav.tabs {
-    display: flex;
-    gap: 4px;
+    display: inline-flex;
+    gap: 2px;
     margin-top: 18px;
+    padding: 3px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 100px;
     animation: fadeUp 0.5s ease 0.15s both;
   }
 
@@ -333,23 +337,22 @@
     font-size: 12px;
     letter-spacing: 0.04em;
     text-decoration: none;
-    color: var(--ink);
-    background: var(--card);
+    color: var(--ink-dim);
+    background: transparent;
     padding: 6px 13px;
     border-radius: 100px;
-    border: 1px solid var(--line);
-    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    border: 1px solid transparent;
+    transition: color 0.15s ease, background 0.15s ease;
   }
 
-  nav.tabs a:hover { border-color: var(--ink-faint); }
+  nav.tabs a:hover { color: var(--ink); }
 
   nav.tabs a.active {
     color: var(--paper);
     background: var(--ink);
-    border-color: var(--ink);
   }
 
-  nav.tabs a.active:hover { border-color: var(--ink); }
+  nav.tabs a.active:hover { color: var(--paper); }
 
   .intro-cards {
     display: flex;
