@@ -2,58 +2,434 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>David Brown</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>David Brown — near Richmond, UK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
-  body { font-family: Arial, sans-serif; background: #0d1117; color: #e6edf3; max-width: 600px; margin: 60px auto; padding: 0 20px; line-height: 1.6; }
-  h1 { font-size: 28px; margin-bottom: 0; }
-  p.tag { color: #8b949e; margin-top: 4px; }
-  h2 { border-bottom: 1px solid #30363d; padding-bottom: 6px; margin-top: 40px; }
-  .service { margin-bottom: 16px; }
-  .service .name { font-weight: bold; }
-  .service .price { color: #58a6ff; }
-  a.button { display: inline-block; margin-top: 30px; padding: 10px 18px; background: #238636; color: white; text-decoration: none; border-radius: 6px; }
+  :root {
+    --paper: #f3efe6;
+    --card: #fffdf7;
+    --ink: #2b2a26;
+    --ink-dim: #8a8577;
+    --ink-faint: #c7c2b3;
+    --line: #ddd8ca;
+
+    --t-print: #a78bd6;
+    --t-wash:  #3fc7dc;
+    --t-garden:#6fb88f;
+    --t-pc:    #6fb88f;
+    --t-tutor: #f0b94c;
+    --t-terra: #e8785c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--paper);
+    background-image: radial-gradient(var(--ink-faint) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .wrap {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 72px 22px 70px;
+  }
+
+  header {
+    margin-bottom: 52px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-text { flex: 1; min-width: 0; }
+
+  .profile-wrap {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    flex-shrink: 0;
+    order: 2;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .profile-tape {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-4deg);
+    width: 56px;
+    height: 24px;
+    background: var(--t-terra);
+    opacity: 0.9;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    z-index: 2;
+  }
+
+  .profile-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid var(--card);
+    outline: 1px solid var(--line);
+    filter: grayscale(1) contrast(1.05);
+    transform: rotate(-3deg);
+    box-shadow: 0 8px 18px -10px rgba(43,42,38,0.4);
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+
+  .signature {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--t-terra);
+    transform: rotate(-2deg);
+    display: inline-block;
+    margin-bottom: 2px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 42px;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+    animation: fadeUp 0.5s ease 0.05s both;
+  }
+
+  .tagline {
+    color: var(--ink-dim);
+    font-size: 15.5px;
+    max-width: 420px;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .tagline strong { color: var(--ink); font-weight: 600; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .tickets {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  .ticket {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 20px 20px 24px;
+    box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
+    animation: fadeUp 0.45s ease both;
+  }
+
+  .ticket:nth-child(odd)  { transform: rotate(-0.4deg); }
+  .ticket:nth-child(even) { transform: rotate(0.35deg); }
+
+  /* perforated left edge */
+  .ticket::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background-image: linear-gradient(var(--line) 60%, transparent 0%);
+    background-size: 1px 8px;
+    background-repeat: repeat-y;
+  }
+
+  /* tape swatch */
+  .tape {
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    width: 46px;
+    height: 22px;
+    background: var(--accent);
+    opacity: 0.9;
+    transform: rotate(-3deg);
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+  }
+
+  .ticket-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .ticket-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--accent) 16%, #fff);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: color-mix(in srgb, var(--accent) 70%, #2b2a26);
+  }
+
+  .icon svg { width: 15px; height: 15px; }
+
+  .ticket-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .ticket-no {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .ticket-desc {
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 8px 0 14px;
+    padding-left: 40px;
+  }
+
+  .ticket-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 40px;
+  }
+
+  .stub-line {
+    flex: 1;
+    height: 0;
+    border-top: 1px dashed var(--line);
+    margin-right: 12px;
+  }
+
+  .price {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--accent) 65%, #2b2a26);
+    background: color-mix(in srgb, var(--accent) 12%, #fff);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+    padding: 3px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  footer {
+    margin-top: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    animation: fadeUp 0.5s ease 0.3s both;
+  }
+
+  footer .loc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+
+  .ig-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 18px;
+    border-radius: 100px;
+    transition: transform 0.15s ease;
+  }
+
+  .ig-link:hover { transform: translateY(-1px); }
+  .ig-link svg { width: 15px; height: 15px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 33px; }
+    .wrap { padding: 56px 16px 50px; }
+    .ticket-desc, .ticket-bottom { padding-left: 0; }
+    header { flex-direction: column-reverse; align-items: flex-start; }
+    .profile-wrap { width: 96px; height: 96px; }
+  }
 </style>
 </head>
 <body>
 
-<h1>David Brown</h1>
-<p class="tag">3D prints, tech help, and outdoor jobs — Hampton, TW12</p>
+<div class="wrap">
 
-<h2>Services</h2>
+  <header>
+    <div class="header-text">
+      <span class="signature">hi, I'm David —</span>
+      <h1>Odd jobs &amp; builds</h1>
+      <p class="tagline">A 14 year old looking to expand his skillset — <strong>3D prints, tech fixes, and outdoor jobs</strong>, near Richmond, UK.</p>
+    </div>
+    <div class="profile-wrap">
+      <div class="profile-tape"></div>
+      <img class="profile-photo" src="profile.jpg" alt="David Brown">
+    </div>
+  </header>
 
-<div class="service">
-  <div class="name">3D Printing</div>
-  <div>Phone stands, D&amp;D minis, custom keychains, replacement parts. Send me your idea or STL.</div>
-  <div class="price">From £4</div>
+  <div class="section-label">Service tickets</div>
+
+  <div class="tickets">
+
+    <div class="ticket" style="--accent: var(--t-print); animation-delay:.04s">
+      <div class="tape" style="background: var(--t-print);"></div>
+      <div class="ticket-top">
+        <div class="ticket-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+          </div>
+          <span class="ticket-title">3D Printing</span>
+        </div>
+        <span class="ticket-no">Nº 01</span>
+      </div>
+      <div class="ticket-desc">Phone stands, D&amp;D minis, custom keychains, replacement parts. Send your idea or an STL file.</div>
+      <div class="ticket-bottom">
+        <span class="stub-line"></span>
+        <span class="price">from £4</span>
+      </div>
+    </div>
+
+    <div class="ticket" style="--accent: var(--t-wash); animation-delay:.08s">
+      <div class="tape" style="background: var(--t-wash);"></div>
+      <div class="ticket-top">
+        <div class="ticket-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v6h6"></path><path d="M20 20v-6h-6"></path><path d="M20 4a10 10 0 0 0-17 6"></path><path d="M4 20a10 10 0 0 0 17-6"></path></svg>
+          </div>
+          <span class="ticket-title">Pressure &amp; Car Washing</span>
+        </div>
+        <span class="ticket-no">Nº 02</span>
+      </div>
+      <div class="ticket-desc">Driveways, patios, cars — local jobs only. Message for a quote.</div>
+      <div class="ticket-bottom">
+        <span class="stub-line"></span>
+        <span class="price">from £10</span>
+      </div>
+    </div>
+
+    <div class="ticket" style="--accent: var(--t-garden); animation-delay:.12s">
+      <div class="tape" style="background: var(--t-garden);"></div>
+      <div class="ticket-top">
+        <div class="ticket-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-4 8-8.5 8-13a8 8 0 1 0-16 0c0 4.5 4 9 8 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>
+          </div>
+          <span class="ticket-title">Garden &amp; Outdoor Jobs</span>
+        </div>
+        <span class="ticket-no">Nº 03</span>
+      </div>
+      <div class="ticket-desc">Leaf clearing, weeding, general tidy-ups around the house.</div>
+      <div class="ticket-bottom">
+        <span class="stub-line"></span>
+        <span class="price">from £10</span>
+      </div>
+    </div>
+
+    <div class="ticket" style="--accent: var(--t-pc); animation-delay:.16s">
+      <div class="tape" style="background: var(--t-pc);"></div>
+      <div class="ticket-top">
+        <div class="ticket-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path></svg>
+          </div>
+          <span class="ticket-title">PC Repair &amp; Upgrades</span>
+        </div>
+        <span class="ticket-no">Nº 04</span>
+      </div>
+      <div class="ticket-desc">Slow laptops, RAM upgrades, reinstalls, general troubleshooting.</div>
+      <div class="ticket-bottom">
+        <span class="stub-line"></span>
+        <span class="price">from £15</span>
+      </div>
+    </div>
+
+    <div class="ticket" style="--accent: var(--t-tutor); animation-delay:.2s">
+      <div class="tape" style="background: var(--t-tutor);"></div>
+      <div class="ticket-top">
+        <div class="ticket-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path></svg>
+          </div>
+          <span class="ticket-title">Tutoring</span>
+        </div>
+        <span class="ticket-no">Nº 05</span>
+      </div>
+      <div class="ticket-desc">Maths &amp; science homework help, primary to early secondary.</div>
+      <div class="ticket-bottom">
+        <span class="stub-line"></span>
+        <span class="price">£10–15/hr</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="loc">NEAR RICHMOND, UK</span>
+    <a class="ig-link" href="https://instagram.com/dbrown.io" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+      @dbrown.io
+    </a>
+  </footer>
+
 </div>
-
-<div class="service">
-  <div class="name">Pressure Washing / Car Washing</div>
-  <div>Driveways, patios, cars. Local, ask for a quote.</div>
-  <div class="price">From £10</div>
-</div>
-
-<div class="service">
-  <div class="name">Garden &amp; Outdoor Jobs</div>
-  <div>Leaf clearing, weeding, general tidy-up.</div>
-  <div class="price">From £10</div>
-</div>
-
-<div class="service">
-  <div class="name">PC Repair &amp; Upgrades</div>
-  <div>Slow laptops, RAM upgrades, reinstalls, general troubleshooting.</div>
-  <div class="price">From £15</div>
-</div>
-
-<div class="service">
-  <div class="name">Tutoring</div>
-  <div>Maths &amp; science homework help, primary to early secondary.</div>
-  <div class="price">£10–15/hr</div>
-</div>
-
-<h2>Contact</h2>
-<p>Message me on Instagram or ask a parent to reach out:</p>
-<a class="button" href="https://instagram.com/dbrown.io" target="_blank">@dbrown.io on Instagram</a>
 
 </body>
 </html>
