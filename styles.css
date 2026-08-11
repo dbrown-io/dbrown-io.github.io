@@ -333,9 +333,10 @@
   }
 
   nav.tabs a {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.04em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: -0.005em;
     text-decoration: none;
     color: var(--ink-dim);
     background: transparent;
