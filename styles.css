@@ -228,13 +228,6 @@
     font-size: 16px;
   }
 
-  .ticket-no {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--ink-faint);
-    white-space: nowrap;
-  }
-
   .ticket-desc {
     color: var(--ink-dim);
     font-size: 13.5px;
@@ -340,20 +333,23 @@
     font-size: 12px;
     letter-spacing: 0.04em;
     text-decoration: none;
-    color: var(--ink-dim);
+    color: var(--ink);
+    background: var(--card);
     padding: 6px 13px;
     border-radius: 100px;
-    border: 1px solid transparent;
-    transition: color 0.15s ease, border-color 0.15s ease;
+    border: 1px solid var(--line);
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
   }
 
-  nav.tabs a:hover { color: var(--ink); }
+  nav.tabs a:hover { border-color: var(--ink-faint); }
 
   nav.tabs a.active {
-    color: var(--ink);
-    border-color: var(--line);
-    background: var(--card);
+    color: var(--paper);
+    background: var(--ink);
+    border-color: var(--ink);
   }
+
+  nav.tabs a.active:hover { border-color: var(--ink); }
 
   .intro-cards {
     display: flex;
