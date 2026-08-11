@@ -366,63 +366,90 @@
     animation: fadeUp 0.5s ease 0.1s both;
   }
 
-  .polaroid-grid {
+  .strips {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 26px;
     margin-top: 30px;
   }
 
-  .polaroid {
+  .strip {
     position: relative;
-    width: 128px;
-    flex: 0 0 128px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 20px 20px 24px;
+    box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
     animation: fadeUp 0.45s ease both;
   }
 
-  .polaroid:nth-child(odd)  { transform: rotate(-2.5deg); }
-  .polaroid:nth-child(even) { transform: rotate(2deg); }
+  .strip:nth-child(odd)  { transform: rotate(-0.4deg); }
+  .strip:nth-child(even) { transform: rotate(0.35deg); }
 
-  .polaroid-tape {
+  .strip::before {
+    content: '';
     position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-4deg);
-    width: 46px;
-    height: 20px;
-    background: var(--accent);
-    opacity: 0.9;
-    border-radius: 2px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
-    z-index: 2;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background-image: linear-gradient(var(--line) 60%, transparent 0%);
+    background-size: 1px 8px;
+    background-repeat: repeat-y;
   }
 
-  .polaroid img {
-    width: 100%;
-    height: 128px;
+  .strip-photos {
+    flex-shrink: 0;
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .strip-photos img {
+    width: 76px;
+    height: 76px;
     object-fit: cover;
-    border-radius: 10px 10px 0 0;
-    border: 3px solid var(--card);
-    border-bottom: none;
+    border-radius: 8px;
     outline: 1px solid var(--line);
     display: block;
   }
 
-  .polaroid-caption {
-    display: flex;
+  .strip-text { flex: 1; min-width: 0; }
+
+  .strip-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .strip-desc {
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .strip-link {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: var(--ink);
-    color: var(--paper);
+    gap: 4px;
+    margin-top: 10px;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.01em;
-    padding: 7px 6px;
-    border: 3px solid var(--card);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 8px 18px -10px rgba(43,42,38,0.4);
+    font-size: 11.5px;
+    color: var(--ink-dim);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    border-radius: 100px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .strip-link:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+  @media (max-width: 480px) {
+    .strip { flex-direction: column; }
+    .strip-photos img { width: 64px; height: 64px; }
   }
 
   .about-body {
