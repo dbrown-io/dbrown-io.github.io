@@ -149,6 +149,8 @@
     background: var(--line);
   }
 
+  .polaroid-grid + .section-label { margin-top: 40px; }
+
   .tickets {
     display: flex;
     flex-direction: column;
@@ -355,45 +357,69 @@
 
   nav.tabs a.active:hover { color: var(--paper); }
 
-  .intro-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  .home-intro {
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 480px;
     margin-top: 44px;
+    animation: fadeUp 0.5s ease 0.1s both;
   }
 
-  .intro-card {
+  .polaroid-grid {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-top: 30px;
+  }
+
+  .polaroid {
+    position: relative;
+    flex: 1 1 160px;
+    max-width: 220px;
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 18px 20px;
-    text-decoration: none;
-    color: var(--ink);
-    box-shadow: 0 3px 0 var(--line);
-    transition: transform 0.15s ease;
+    border-radius: 6px;
+    padding: 10px 10px 16px;
+    box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
+    animation: fadeUp 0.45s ease both;
   }
 
-  .intro-card:hover { transform: translateY(-1px); }
+  .polaroid:nth-child(odd)  { transform: rotate(-1.4deg); }
+  .polaroid:nth-child(even) { transform: rotate(1.2deg); }
 
-  .intro-card-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
+  .polaroid-tape {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 46px;
+    height: 20px;
+    background: var(--accent);
+    opacity: 0.9;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+  }
+
+  .polaroid img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 3px;
+    display: block;
+    filter: contrast(1.03);
+  }
+
+  .polaroid-caption {
+    font-family: 'Caveat', cursive;
     font-size: 17px;
-    margin-bottom: 3px;
+    color: var(--ink);
+    text-align: center;
+    margin-top: 10px;
   }
 
-  .intro-card-desc {
-    font-size: 13px;
-    color: var(--ink-dim);
-  }
-
-  .intro-card-arrow {
-    font-family: 'IBM Plex Mono', monospace;
-    color: var(--ink-faint);
-    font-size: 18px;
+  @media (max-width: 480px) {
+    .polaroid { flex: 1 1 130px; }
   }
 
   .about-body {
