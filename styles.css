@@ -324,6 +324,7 @@
   }
 
   nav.tabs {
+    position: relative;
     display: inline-flex;
     gap: 2px;
     margin-top: 18px;
@@ -335,6 +336,8 @@
   }
 
   nav.tabs a {
+    position: relative;
+    z-index: 1;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 600;
     font-size: 13px;
@@ -356,6 +359,21 @@
   }
 
   nav.tabs a.active:hover { color: var(--paper); }
+
+  .tab-indicator {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 0;
+    width: 0;
+    background: var(--ink);
+    border-radius: 100px;
+    z-index: 0;
+    transition: left 0.32s cubic-bezier(.4,0,.2,1), width 0.32s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* once JS is driving the indicator, let it own the pill so the two don't double up */
+  nav.tabs.js-ready a.active { background: transparent; }
 
   .home-intro {
     color: var(--ink);
