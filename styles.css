@@ -273,14 +273,14 @@
     animation: fadeUp 0.5s ease 0.3s both;
   }
 
-  footer .loc {
+  .loc {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.06em;
     color: var(--ink-faint);
   }
 
-  .ig-link {
+  .btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -294,17 +294,40 @@
     transition: transform 0.15s ease;
   }
 
-  .ig-link:hover { transform: translateY(-1px); }
-  .ig-link svg { width: 15px; height: 15px; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn svg { width: 15px; height: 15px; }
 
-  .ig-link--small {
+  .btn--small {
     font-size: 12.5px;
     padding: 7px 13px;
     margin-top: 12px;
     width: 100%;
     justify-content: center;
   }
-  .ig-link--small svg { width: 13px; height: 13px; }
+  .btn--small svg { width: 13px; height: 13px; }
+
+  .home-cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  .home-cta + .section-label { margin-top: 44px; }
+
+  .home-services {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 0;
+  }
+
+  .see-all {
+    display: inline-block;
+    margin-top: 20px;
+  }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
