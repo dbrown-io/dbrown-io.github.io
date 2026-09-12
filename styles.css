@@ -106,11 +106,15 @@
     font-family: 'Caveat', cursive;
     font-size: 22px;
     color: var(--t-terra);
+    text-decoration: none;
     transform: rotate(-2deg);
     display: inline-block;
     margin-bottom: 2px;
     animation: fadeUp 0.5s ease both;
+    transition: opacity 0.15s ease;
   }
+
+  a.signature:hover { opacity: 0.75; }
 
   h1 {
     font-family: 'Space Grotesk', sans-serif;
