@@ -43,6 +43,65 @@
 
   .header-text { flex: 1; min-width: 0; }
 
+  .profile-wrap {
+    width: 128px;
+    flex-shrink: 0;
+    order: 2;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .profile-card {
+    position: relative;
+    transform: rotate(-3deg);
+  }
+
+  .profile-tape {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-4deg);
+    width: 56px;
+    height: 24px;
+    background: var(--t-terra);
+    opacity: 0.9;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    z-index: 2;
+  }
+
+  .profile-photo {
+    width: 100%;
+    height: 128px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+    border: 3px solid var(--card);
+    border-bottom: none;
+    outline: 1px solid var(--line);
+    filter: grayscale(1) contrast(1.05);
+    display: block;
+  }
+
+  .profile-ig {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12.5px;
+    padding: 8px 0;
+    border: 3px solid var(--card);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 18px -10px rgba(43,42,38,0.4);
+    transition: opacity 0.15s ease;
+  }
+
+  .profile-ig:hover { opacity: 0.85; }
+  .profile-ig svg { width: 13px; height: 13px; }
+
   .signature {
     font-family: 'Caveat', cursive;
     font-size: 22px;
@@ -283,21 +342,29 @@
     h1 { font-size: 33px; }
     .wrap { padding: 56px 16px 50px; }
     .ticket-desc, .ticket-bottom { padding-left: 0; }
-    header { flex-direction: column; align-items: flex-start; }
-    nav.tabs { margin-top: 20px; }
+    header { flex-direction: column-reverse; align-items: flex-start; }
+    .profile-wrap { width: 108px; }
+  }
+
+  /* Experience page only: no profile card, so the nav pill stands
+     alone in the header instead of sitting below the h1. */
+  header.header--no-photo nav.tabs { margin-top: 6px; }
+
+  @media (max-width: 480px) {
+    header.header--no-photo { flex-direction: column; }
+    header.header--no-photo nav.tabs { margin-top: 20px; }
   }
 
   nav.tabs {
     position: relative;
     display: inline-flex;
     gap: 2px;
-    margin-top: 6px;
+    margin-top: 18px;
     padding: 3px;
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 100px;
     animation: fadeUp 0.5s ease 0.15s both;
-    flex-shrink: 0;
   }
 
   nav.tabs a {
