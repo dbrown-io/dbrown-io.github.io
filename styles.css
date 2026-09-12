@@ -635,3 +635,16 @@
     .li-identity { padding: 0 18px 20px; }
     .li-avatar { width: 76px; height: 76px; margin-top: -38px; }
   }
+
+  .li-exp-photos {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .li-exp-photos img {
+    width: 56px;
+    border-radius: 8px;
+    outline: 1px solid var(--line);
+    display: block;
+  }
