@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
@@ -50,84 +50,53 @@
     </div>
   </header>
 
-  <div class="li-profile">
-    <div class="li-banner"></div>
-    <div class="li-identity">
-      <div class="li-avatar"><img src="profile.jpg" alt="David Brown"></div>
-      <div class="li-name">David Brown</div>
-      <div class="li-headline">Freelance odd-jobs &amp; maker: 3D printing, tech fixes, tutoring, and outdoor work.</div>
-      <div class="li-meta">RICHMOND, UK · YEAR 11 STUDENT</div>
-    </div>
+  <p class="home-intro">A fifteen-year-old with a passion for tech, theatre, and science. I run my own homelab, I'm part of the backstage crew for school theatre productions, and I'm exploring my interest in medicine alongside it all.</p>
 
-    <div class="li-section">
-      <div class="li-section-title">About</div>
-      <p class="li-about-text">I run a small homelab off a MacBook running Proxmox: self-hosting, networking, and building automations that actually do something useful, not just tinkering for the sake of it. Outside of the tech side, I take on practical, real-world jobs too, to build up genuine experience (and a bit of savings) alongside it.</p>
-    </div>
+  <div class="section-label">SKILLS</div>
+  <div class="skill-tags">
+    <span class="skill-tag">Proxmox</span>
+    <span class="skill-tag">Networking</span>
+    <span class="skill-tag">n8n</span>
+    <span class="skill-tag">API integrations</span>
+    <span class="skill-tag">Linux / terminal</span>
+    <span class="skill-tag">3D design &amp; printing</span>
+    <span class="skill-tag">Photography</span>
+    <span class="skill-tag">Customer service</span>
+  </div>
 
-    <div class="li-section">
-      <div class="li-section-title">Skills</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Proxmox</span>
-        <span class="skill-tag">Networking</span>
-        <span class="skill-tag">n8n</span>
-        <span class="skill-tag">API integrations</span>
-        <span class="skill-tag">Linux / terminal</span>
-        <span class="skill-tag">3D design &amp; printing</span>
-        <span class="skill-tag">Photography</span>
-        <span class="skill-tag">Customer service</span>
+  <div class="section-label" style="margin-top: 40px;">PROJECTS</div>
+  <div class="projects">
+
+    <details class="project" style="--accent: var(--t-wash);">
+      <summary>
+        <div class="tape" style="background: var(--t-wash);"></div>
+        <img class="project-thumb" src="images/homelab.jpg" alt="David's homelab setup">
+        <div class="project-summary">
+          <div class="project-title">Homelab</div>
+          <p class="project-teaser">A MacBook running Proxmox, slowly turning into more self-hosted services than I probably need.</p>
+        </div>
+        <svg class="project-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </summary>
+      <div class="project-detail">
+        <p>Started it to stop paying for cloud services I could just run myself. It's grown into a small stack of self-hosted apps, a proper home network setup, and n8n automations that handle stuff I used to do by hand. Full build notes and configs are on <a class="strip-inline-link" href="https://github.com/dbrown-io/homelab" target="_blank" rel="noopener">GitHub</a>.</p>
       </div>
-    </div>
+    </details>
 
-    <div class="li-section">
-      <div class="li-section-title">Off the Clock</div>
-      <div class="strips">
-
-        <div class="strip" style="--accent: var(--t-wash);">
-          <div class="tape" style="background: var(--t-wash);"></div>
-          <div class="strip-photos">
-            <img src="images/homelab.jpg" alt="David's homelab setup">
-          </div>
-          <div class="strip-text">
-            <div class="strip-title">Homelab</div>
-            <p class="strip-desc">A MacBook running Proxmox, slowly turning into more self-hosted services than I probably need. Build notes on <a class="strip-inline-link" href="https://github.com/dbrown-io/homelab" target="_blank" rel="noopener">GitHub</a>.</p>
-          </div>
+    <details class="project" style="--accent: var(--t-print);">
+      <summary>
+        <div class="tape" style="background: var(--t-print);"></div>
+        <img class="project-thumb" src="images/plane.jpg" alt="Photography by David, a plane on the runway">
+        <div class="project-summary">
+          <div class="project-title">Photography</div>
+          <p class="project-teaser">Dog photo shoots, people shoots, and whatever else I point a camera at.</p>
         </div>
-
-        <div class="strip" style="--accent: var(--t-print);">
-          <div class="tape" style="background: var(--t-print);"></div>
-          <div class="strip-photos">
-            <img src="images/plane.jpg" alt="Photography by David, a plane on the runway">
-          </div>
-          <div class="strip-text">
-            <div class="strip-title">Photography</div>
-            <p class="strip-desc">I often take professional pictures of the dogs that stay with me. Otherwise it's architecture, planes, whatever I see on trips.</p>
-          </div>
-        </div>
-
-        <div class="strip" style="--accent: var(--t-terra);">
-          <div class="tape" style="background: var(--t-terra);"></div>
-          <div class="strip-photos">
-            <img src="images/leila-cuddle.jpg" alt="Leila the dog">
-          </div>
-          <div class="strip-text">
-            <div class="strip-title">Leila</div>
-            <p class="strip-desc">Rhodesian Ridgeback. Professional counter-surfer, world-class napper, mildly offended by the postman most days.</p>
-          </div>
-        </div>
-
-        <div class="strip" style="--accent: var(--t-tutor);">
-          <div class="tape" style="background: var(--t-tutor);"></div>
-          <div class="strip-photos">
-            <img src="images/coxing.jpg" alt="David coxing at a rowing regatta">
-          </div>
-          <div class="strip-text">
-            <div class="strip-title">Rowing · Cox, J16</div>
-            <p class="strip-desc">Early starts, long sessions on the water, most days of the week built around it. This season: two A four crews and a B eight on the podium, plus an unbeaten C eight.</p>
-          </div>
-        </div>
-
+        <svg class="project-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </summary>
+      <div class="project-detail">
+        <p>Full gallery's on the way: dog shoots, people shoots, architecture, and travel photos. Otherwise it's whatever I see on trips.</p>
       </div>
-    </div>
+    </details>
+
   </div>
 
   <footer>
