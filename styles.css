@@ -621,8 +621,8 @@
 
   .photo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
     margin-top: 16px;
   }
 
@@ -654,6 +654,7 @@
   }
 
   .photo-grid + .section-label { margin-top: 40px; }
+  .photo-grid + .home-intro { margin-top: 26px; }
 
   .skill-tag {
     font-family: 'IBM Plex Mono', monospace;
