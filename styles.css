@@ -2,24 +2,31 @@
     --paper: #f3efe6;
     --card: #fffdf7;
     --ink: #2b2a26;
-    --ink-dim: #8a8577;
-    --ink-faint: #c7c2b3;
+    /* Text colours are contrast-checked against both --paper and --card:
+       --ink-dim 5.8:1 / 6.6:1, --ink-faint 4.7:1 / 5.3:1 (WCAG AA at any size). */
+    --ink-dim: #615c4b;
+    --ink-faint: #6f6a5b;
     --line: #ddd8ca;
+    /* Background texture only - never used for text, so it stays near-invisible. */
+    --dot: #dcd6c6;
 
+    /* Tape/accent swatches. Decorative surfaces, so they stay bright;
+       --terra-text is the readable counterpart for terracotta *text*. */
     --t-print: #a78bd6;
     --t-wash:  #3fc7dc;
     --t-garden:#6fb88f;
-    --t-pc:    #6fb88f;
+    --t-pc:    #5b9dd9;
     --t-tutor: #f0b94c;
     --t-terra: #e8785c;
+    --terra-text: #b3492f;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     background-color: var(--paper);
-    background-image: radial-gradient(var(--ink-faint) 1px, transparent 1px);
-    background-size: 22px 22px;
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 30px 30px;
     color: var(--ink);
     font-family: 'Inter', system-ui, sans-serif;
     line-height: 1.5;
@@ -28,13 +35,13 @@
   }
 
   .wrap {
-    max-width: 620px;
+    max-width: 760px;
     margin: 0 auto;
     padding: 72px 22px 70px;
   }
 
   header {
-    margin-bottom: 52px;
+    margin-bottom: 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -105,7 +112,7 @@
   .signature {
     font-family: 'Caveat', cursive;
     font-size: 22px;
-    color: var(--t-terra);
+    color: var(--terra-text);
     text-decoration: none;
     transform: rotate(-2deg);
     display: inline-block;
@@ -134,6 +141,9 @@
 
   .tagline strong { color: var(--ink); font-weight: 600; }
 
+  .routes + .section-label,
+  .home-intro + .section-label { margin-top: 44px; }
+
   .section-label {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
@@ -153,12 +163,14 @@
     background: var(--line);
   }
 
-  .polaroid-grid + .section-label { margin-top: 40px; }
-
   .tickets {
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 26px 20px;
+  }
+
+  @media (max-width: 640px) {
+    .tickets { grid-template-columns: 1fr; }
   }
 
   .ticket {
@@ -169,10 +181,11 @@
     padding: 20px 20px 20px 24px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
     animation: fadeUp 0.45s ease both;
+    display: flex;
+    flex-direction: column;
   }
 
-  .ticket:nth-child(odd)  { transform: rotate(-0.4deg); }
-  .ticket:nth-child(even) { transform: rotate(0.35deg); }
+  .ticket-bottom { margin-top: auto; }
 
   /* perforated left edge */
   .ticket::before {
@@ -231,21 +244,23 @@
   .ticket-title {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 15px;
+    line-height: 1.3;
   }
+
+  .home-services .ticket { padding: 18px 16px 18px 20px; }
+  .home-services .ticket-head { gap: 9px; }
 
   .ticket-desc {
     color: var(--ink-dim);
     font-size: 13.5px;
-    margin: 8px 0 14px;
-    padding-left: 40px;
+    margin: 10px 0 16px;
   }
 
   .ticket-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 40px;
   }
 
   .stub-line {
@@ -301,14 +316,6 @@
   .btn:hover { transform: translateY(-1px); }
   .btn svg { width: 15px; height: 15px; }
 
-  .btn--small {
-    font-size: 12.5px;
-    padding: 7px 13px;
-    margin-top: 12px;
-    width: 100%;
-    justify-content: center;
-  }
-  .btn--small svg { width: 13px; height: 13px; }
 
   .home-cta {
     display: flex;
@@ -322,10 +329,14 @@
   .home-cta + .section-label { margin-top: 44px; }
 
   .home-services {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-top: 0;
+  }
+
+  @media (max-width: 640px) {
+    .home-services { grid-template-columns: 1fr; }
   }
 
   .see-all {
@@ -345,25 +356,17 @@
   @media (max-width: 480px) {
     h1 { font-size: 33px; }
     .wrap { padding: 56px 16px 50px; }
-    .ticket-desc, .ticket-bottom { padding-left: 0; }
-    header { flex-direction: column-reverse; align-items: flex-start; }
-    .profile-wrap { width: 108px; }
-  }
-
-  /* Experience page only: no profile card, so the nav pill stands
-     alone in the header instead of sitting below the h1. */
-  header.header--no-photo nav.tabs { margin-top: 6px; }
-
-  @media (max-width: 480px) {
-    header.header--no-photo { flex-direction: column; }
-    header.header--no-photo nav.tabs { margin-top: 20px; }
+    .profile-wrap { width: 96px; }
+    .profile-photo { height: 96px; }
   }
 
   nav.tabs {
     position: relative;
-    display: inline-flex;
+    display: flex;
+    width: fit-content;
     gap: 2px;
-    margin-top: 18px;
+    margin-top: 28px;
+    margin-bottom: 44px;
     padding: 3px;
     background: var(--card);
     border: 1px solid var(--line);
@@ -408,15 +411,19 @@
     transition: left 0.32s cubic-bezier(.4,0,.2,1), width 0.32s cubic-bezier(.4,0,.2,1);
   }
 
-  /* once JS is driving the indicator, let it own the pill so the two don't double up */
-  nav.tabs.js-ready a.active { background: transparent; }
+  /* once JS is driving the indicator, let it own the pill so the two don't double up.
+     Below 480px the indicator is hidden (the pill wraps to two rows), so the
+     active tab keeps painting its own background. */
+  @media (min-width: 481px) {
+    nav.tabs.js-ready a.active { background: transparent; }
+  }
 
   .home-intro {
     color: var(--ink);
     font-size: 15px;
     line-height: 1.7;
-    max-width: 480px;
-    margin-top: 44px;
+    max-width: 56ch;
+    margin-top: 0;
     animation: fadeUp 0.5s ease 0.1s both;
   }
 
@@ -440,8 +447,6 @@
     animation: fadeUp 0.45s ease both;
   }
 
-  .strip:nth-child(odd)  { transform: rotate(-0.4deg); }
-  .strip:nth-child(even) { transform: rotate(0.35deg); }
 
   .strip::before {
     content: '';
@@ -522,11 +527,8 @@
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .project:nth-child(odd)  { --rot: -0.4deg; transform: rotate(var(--rot)); }
-  .project:nth-child(even) { --rot: 0.35deg; transform: rotate(var(--rot)); }
-
   .project:hover {
-    transform: rotate(var(--rot)) translateY(-3px);
+    transform: translateY(-3px);
     box-shadow: 0 6px 0 var(--line), 0 18px 32px -16px rgba(43,42,38,0.45);
   }
 
@@ -666,7 +668,7 @@
   /* LinkedIn-style profile block (About page) */
 
   .li-profile {
-    margin-top: 36px;
+    margin-top: 0;
     animation: fadeUp 0.5s ease 0.1s both;
   }
 
@@ -810,3 +812,145 @@
     display: block;
   }
 
+
+  /* ---- Split routes: the homepage serves two audiences (neighbours who want
+     a job doing, and people considering hiring me), so it offers both up front
+     instead of making one of them guess which tab is theirs. ---- */
+
+  .routes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 26px;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  @media (max-width: 560px) {
+    .routes { grid-template-columns: 1fr; }
+  }
+
+  .route {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px;
+    text-decoration: none;
+    color: var(--ink);
+    box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .route:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 var(--line), 0 16px 28px -16px rgba(43,42,38,0.45);
+  }
+
+  .route-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .route-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    margin: 7px 0 5px;
+  }
+
+  .route-desc {
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+
+  .route-go {
+    display: inline-block;
+    margin-top: 11px;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--terra-text);
+  }
+
+  /* ---- Contact. Every service said "message for a quote" and the site gave
+     no way to do it, so this is the one block that appears on every page. ---- */
+
+  .contact {
+    margin-top: 48px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .contact-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+  }
+
+  .contact-desc {
+    color: var(--ink-dim);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 7px;
+    max-width: 46ch;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 18px;
+    border-radius: 100px;
+    transition: transform 0.15s ease;
+  }
+
+  .contact-btn:hover { transform: translateY(-1px); }
+  .contact-btn svg { width: 15px; height: 15px; }
+
+  .contact-btn--ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+
+  /* ---- Photography empty state: reads as "in progress", not abandoned ---- */
+
+  .photo-placeholder {
+    background: color-mix(in srgb, var(--line) 22%, var(--card));
+    border: 1px dashed var(--line);
+    color: var(--ink-faint);
+  }
+
+  /* Four tabs don't fit one row on a phone. Kept after the base nav rules
+     so these win on equal specificity. */
+  @media (max-width: 480px) {
+    nav.tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      gap: 3px;
+      border-radius: 20px;
+      margin-bottom: 36px;
+    }
+    nav.tabs a { text-align: center; padding: 9px 10px; }
+    .tab-indicator { display: none; }
+  }

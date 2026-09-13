@@ -16,8 +16,8 @@
 <meta name="twitter:image" content="https://dbrown-io.github.io/social-preview.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=5">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
@@ -28,34 +28,53 @@
 
 <div class="wrap">
 
-  <header class="header--no-photo">
+  <header>
     <div class="header-text">
       <a class="signature" href="index.html">hi, I'm David</a>
       <h1>Photography</h1>
       <p class="tagline">Dog shoots, people shoots, and whatever else I point a camera at.</p>
     </div>
-    <nav class="tabs">
-      <a href="about.html">About</a>
-      <a href="experience.html">Experience</a>
-      <a href="services.html">Services</a>
-    </nav>
+    <div class="profile-wrap">
+      <div class="profile-card">
+        <div class="profile-tape"></div>
+        <img class="profile-photo" src="profile.jpg" alt="David Brown">
+        <a class="profile-ig" href="https://instagram.com/dbrown.io" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          @dbrown.io
+        </a>
+      </div>
+    </div>
   </header>
+
+  <nav class="tabs">
+    <a href="about.html">About</a>
+    <a href="experience.html">Experience</a>
+    <a href="services.html">Services</a>
+    <a href="photography.html" class="active">Photography</a>
+  </nav>
 
   <div class="section-label">DOG SHOOTS</div>
   <div class="photo-grid">
     <img src="images/leila-cuddle.jpg" alt="Dog photography by David">
-    <div class="photo-placeholder">MORE<br>COMING<br>SOON</div>
-    <div class="photo-placeholder">MORE<br>COMING<br>SOON</div>
+    <img src="images/plane.jpg" alt="A British Airways plane on the runway, shot by David">
+    <div class="photo-placeholder">NEXT SHOOT<br>IN PROGRESS</div>
   </div>
 
   <div class="section-label">PEOPLE SHOOTS</div>
-  <div class="photo-grid">
-    <div class="photo-placeholder">COMING<br>SOON</div>
-    <div class="photo-placeholder">COMING<br>SOON</div>
-    <div class="photo-placeholder">COMING<br>SOON</div>
-  </div>
+  <p class="home-intro" style="margin-top:0">Booked but not shot yet. If you want portraits or a shoot with your dog, message me and I&rsquo;ll sort a time &mdash; early ones are free while I build the portfolio.</p>
 
-  <a class="back-link strip-inline-link" href="about.html">&larr; Back to About</a>
+  <div class="contact">
+    <div class="contact-title">Want to book something?</div>
+    <p class="contact-desc">Tell me what you need and roughly when. I&rsquo;ll come back with a price and a time. Local jobs near Richmond only.</p>
+    <div class="contact-actions">
+      <a class="contact-btn" href="https://instagram.com/dbrown.io" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        Message me on Instagram
+      </a>
+      <!-- TODO: once a custom domain + iCloud mailbox is set up, add:
+           <a class="contact-btn contact-btn--ghost" href="mailto:YOU@YOURDOMAIN?subject=Job%20enquiry">Email me</a> -->
+    </div>
+  </div>
 
   <footer>
     <span class="loc">NEAR RICHMOND, UK</span>
