@@ -1155,6 +1155,27 @@
   .form-status.is-warn,
   .form-status.is-error { border-left-color: var(--terra-text); color: var(--terra-text); }
 
+  /* Spam honeypot. Off-screen rather than display:none, because some bots skip
+     hidden fields; a real visitor never reaches it (aria-hidden, tabindex -1). */
+  .honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Exempt from the 44px control sizing above: nothing taps this. */
+  .honeypot input { min-height: 0; padding: 0; width: 1px; }
+
+  .form-small {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-faint);
+    margin: 0;
+  }
+
   .contact-alt {
     margin-top: 18px;
     font-size: 14.5px;

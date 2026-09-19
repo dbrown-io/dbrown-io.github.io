@@ -1,10 +1,9 @@
-// endpoint is the form's POST target, from formspree.io (the free tier is
-// enough). Until it is set the form says so and points at Instagram rather
-// than pretending to send. The email also appears in the JSON-LD in
-// index.html and services.html, so change it in all three places.
+// The form's POST target lives on the form's own action attribute in
+// services.html, which doubles as the no-JS fallback. The email below also
+// appears in the JSON-LD in index.html and services.html, so a change needs
+// making in all three places.
 var SITE = {
-  email: 'dbrown.io@icloud.com',
-  endpoint: ''
+  email: 'dbrown.io@icloud.com'
 };
 
 (function () {
@@ -24,8 +23,9 @@ var SITE = {
   var status = form.querySelector('.form-status');
   var submit = form.querySelector('button[type="submit"]');
   var notice = form.querySelector('.form-notice');
+  var endpoint = form.getAttribute('action');
 
-  if (!SITE.endpoint) {
+  if (!endpoint) {
     notice.hidden = false;
   }
 
@@ -37,7 +37,7 @@ var SITE = {
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    if (!SITE.endpoint) {
+    if (!endpoint) {
       say('This form is not connected yet, so nothing was sent. Message @dbrown.io on Instagram and I will pick it up there. Your text is still in the boxes below, so you can copy it across.', 'warn');
       return;
     }
@@ -45,7 +45,7 @@ var SITE = {
     submit.disabled = true;
     say('Sending.', 'busy');
 
-    fetch(SITE.endpoint, {
+    fetch(endpoint, {
       method: 'POST',
       body: new FormData(form),
       headers: { Accept: 'application/json' }

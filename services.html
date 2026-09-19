@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <link rel="canonical" href="https://dbrown-io.github.io/services.html">
-<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="styles.css?v=18">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
@@ -281,7 +281,12 @@
     <div class="contact-title">Tell me about the job</div>
     <p class="contact-desc">The more you tell me now, the fewer messages it takes. I&rsquo;ll come back with a price and a time.</p>
 
-    <form class="booking" novalidate>
+    <form class="booking" action="https://formspree.io/f/xppwqqoq" method="POST" novalidate>
+      <input type="hidden" name="_subject" value="Job enquiry from dbrown-io.github.io">
+      <p class="honeypot" aria-hidden="true">
+        <label for="f-hp">Leave this empty</label>
+        <input id="f-hp" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+      </p>
       <div class="field">
         <label for="f-name">Your name</label>
         <input id="f-name" name="name" type="text" autocomplete="name" required>
@@ -314,6 +319,7 @@
       <p class="form-notice" hidden>This form isn&rsquo;t connected to an inbox yet, so Instagram is the fastest way to reach me today.</p>
       <button class="contact-btn" type="submit">Send this to David</button>
       <p class="form-status" role="status"></p>
+      <p class="form-small">I only use this to reply to you. I don&rsquo;t pass it on to anyone.</p>
     </form>
 
     <p class="contact-alt">Or message me at

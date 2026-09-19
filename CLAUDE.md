@@ -25,13 +25,20 @@ framework. Plain HTML with one shared `styles.css` and three small scripts:
   where the nav becomes a 2x2 grid, so the active tab paints its own
   background there.
 
-## Two things David fills in
+## The booking form
 
-`contact.js` holds the email (set: `dbrown.io@icloud.com`) and the formspree
-`endpoint`. Until `endpoint` is set the booking form shows a visible notice,
-keeps what was typed and points at Instagram, rather than pretending to send.
-The email also appears in the JSON-LD in `index.html` and `services.html`, so
-a change needs making in all three places.
+The formspree endpoint is the form's own `action` in `services.html`, which
+doubles as the fallback when JS is off: without it the submit would do
+nothing. `contact.js` reads that attribute rather than keeping a second copy.
+If the action is ever empty the form says so and points at Instagram instead
+of pretending to send.
+
+Spam is handled by the `_gotcha` honeypot, not reCAPTCHA. reCAPTCHA expects a
+widget on the page and silently fails an AJAX submit, so leave it off in the
+formspree dashboard.
+
+The email `dbrown.io@icloud.com` lives in `contact.js` and in the JSON-LD in
+both `index.html` and `services.html`, so a change needs making in all three.
 
 Do not publish a phone number. See `.claude/review-002-2026-09-19.md`.
 
