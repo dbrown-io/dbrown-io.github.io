@@ -2,7 +2,8 @@
 
 Static personal site for David Brown: local services near Richmond, plus
 experience, projects and a photography gallery. No build step, no
-framework. Plain HTML with one shared `styles.css` and one `nav.js`.
+framework. Plain HTML with one shared `styles.css` and three small scripts:
+`nav.js`, `contact.js` and `gallery.js` (photography only).
 
 ## Layout
 
@@ -10,12 +11,37 @@ framework. Plain HTML with one shared `styles.css` and one `nav.js`.
   assessing him professionally. Both routes live under the H1.
 - `styles.css` is the single stylesheet. Bump the `?v=N` query on every
   page when changing it, or browsers serve the old file.
+- `services.html` is the only page with the booking form. Everything else
+  links to `services.html#book`, so there is one form to maintain.
+- The contact block is worded per page: a recruiter reading Experience and
+  a neighbour reading Services are not being asked the same thing.
 - Colour tokens are contrast-checked. `--ink-dim` and `--ink-faint` are
   text colours meeting WCAG AA against both `--paper` and `--card`;
   `--dot` is background texture only and must never be used for text.
+- `--line` is a decorative edge at 1.40:1 and must never bound a control.
+  Anything a user has to find, a form field or a button outline, uses
+  `--line-strong` (3.68:1 on `--card`, 3.26:1 on `--paper`).
 - `nav.js` slides the tab indicator. The indicator is hidden below 480px,
   where the nav becomes a 2x2 grid, so the active tab paints its own
   background there.
+
+## Two things David fills in
+
+`contact.js` has an empty `email` and an empty `endpoint` at the top. Until
+`endpoint` is set the booking form shows a visible notice, keeps what was
+typed and points at Instagram, rather than pretending to send. Setting
+`email` fills the footer and every contact block. Put the same address in
+the JSON-LD in `index.html`.
+
+Do not publish a phone number. See `.claude/review-002-2026-09-19.md`.
+
+## Content that must stay real
+
+Prices, grades, view counts and testimonials are all either real or absent.
+The "from £X" prices were wrong and came out; the ticket price spans say
+"Quote first" until real rates arrive. There is no testimonials section
+because there are no real testimonials yet. Marked HTML comments show where
+the KidsHustle links and the Year 10 grades go.
 
 ## Images
 
@@ -34,6 +60,12 @@ dot background, R-08 arrows, R-12 shadow, R-14 card uniformity, R-19
 fadeUp). Those rules ask for a written reason, not removal: this section
 is that reason. Do not strip the identity to satisfy them. If a change
 here looks warranted, raise it and let David decide.
+
+The Experience page used to be a LinkedIn profile clone (banner, round
+avatar, headline, section rows). That was R-30, cloning a popular product,
+and it was not part of the settled direction. David chose to rebuild it, so
+it now uses the same tape-and-card vocabulary as the service tickets. Do not
+reintroduce it.
 
 <!-- antislop:start -->
 ## antislop
