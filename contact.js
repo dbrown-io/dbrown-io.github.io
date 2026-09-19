@@ -1,15 +1,9 @@
-// David: these are the two things to fill in. Everything else follows from them.
-//
-//   email    a working address. Once set, an email link appears in the footer
-//            and beside the Instagram button on every page.
-//   endpoint the form's POST target, from formspree.io (free tier is enough).
-//            Until it is set, the form says so and points at Instagram
-//            instead of pretending to send.
-//
-// After setting email, also put the same address in the JSON-LD block in
-// index.html, so search engines see it too.
+// endpoint is the form's POST target, from formspree.io (the free tier is
+// enough). Until it is set the form says so and points at Instagram rather
+// than pretending to send. The email also appears in the JSON-LD in
+// index.html and services.html, so change it in all three places.
 var SITE = {
-  email: '',
+  email: 'dbrown.io@icloud.com',
   endpoint: ''
 };
 

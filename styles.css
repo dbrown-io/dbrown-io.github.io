@@ -733,6 +733,16 @@
     display: block;
   }
 
+  .record-photo {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    border-radius: 10px;
+    outline: 1px solid var(--line);
+    display: block;
+    margin-top: 16px;
+  }
+
   .record-caption {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
