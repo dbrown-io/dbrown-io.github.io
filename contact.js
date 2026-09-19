@@ -29,6 +29,10 @@ var SITE = {
     notice.hidden = false;
   }
 
+  // The Instagram and email routes are printed directly under the form, so a
+  // failure points at them rather than listing them a second time.
+  var failed = 'That did not send, so nothing reached me. Try again in a minute, or use one of the options below.';
+
   function say(text, kind) {
     status.textContent = text;
     status.className = 'form-status is-' + kind;
@@ -38,7 +42,7 @@ var SITE = {
     e.preventDefault();
 
     if (!endpoint) {
-      say('This form is not connected yet, so nothing was sent. Message @dbrown.io on Instagram and I will pick it up there. Your text is still in the boxes below, so you can copy it across.', 'warn');
+      say('This form is not connected yet, so nothing was sent. Your text is still here, so you can copy it into one of the options below.', 'warn');
       return;
     }
 
@@ -50,11 +54,23 @@ var SITE = {
       body: new FormData(form),
       headers: { Accept: 'application/json' }
     }).then(function (res) {
-      if (!res.ok) throw new Error(res.status);
-      form.reset();
-      say('Got it. I will come back to you with a price and a time.', 'ok');
-    }).catch(function () {
-      say('That did not send. Message @dbrown.io on Instagram instead, or try again in a minute.', 'error');
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        return { ok: res.ok, status: res.status, data: data };
+      });
+    }).then(function (res) {
+      if (res.ok) {
+        form.reset();
+        say('Got it. I will come back to you with a price and a time.', 'ok');
+        return;
+      }
+      // Formspree says why it refused in the response body. Without this the
+      // visitor sees "did not send" and nobody can find out what went wrong.
+      var reason = (res.data.errors || []).map(function (e) { return e.message; }).join(' ');
+      console.error('Formspree refused this submission (HTTP ' + res.status + '): ' + (reason || JSON.stringify(res.data)));
+      say(failed, 'error');
+    }).catch(function (err) {
+      console.error('Could not reach Formspree at all: network error, CORS, or a blocked request.', err);
+      say(failed, 'error');
     }).then(function () {
       submit.disabled = false;
     });

@@ -10,7 +10,9 @@ framework. Plain HTML with one shared `styles.css` and three small scripts:
 - `index.html` splits two audiences: locals booking a job, and people
   assessing him professionally. Both routes live under the H1.
 - `styles.css` is the single stylesheet. Bump the `?v=N` query on every
-  page when changing it, or browsers serve the old file.
+  page when changing it, or browsers serve the old file. The same applies to
+  `nav.js`, `contact.js` and `gallery.js`: a stale cached script is harder to
+  spot than stale CSS, because the page still looks right.
 - `services.html` is the only page with the booking form. Everything else
   links to `services.html#book`, so there is one form to maintain.
 - The contact block is worded per page: a recruiter reading Experience and
