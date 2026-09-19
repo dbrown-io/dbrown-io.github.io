@@ -9,6 +9,9 @@
     --line: #ddd8ca;
     /* Background texture only - never used for text, so it stays near-invisible. */
     --dot: #dcd6c6;
+    /* Form control borders carry meaning, so they need the 3:1 non-text bar
+       --line cannot meet: 3.68:1 on --card, 3.26:1 on --paper. */
+    --line-strong: #8d8370;
 
     /* Tape/accent swatches. Decorative surfaces, so they stay bright;
        --terra-text is the readable counterpart for terracotta *text*. */
@@ -99,6 +102,8 @@
     font-weight: 600;
     font-size: 12.5px;
     padding: 8px 0;
+    /* A thumb needs 44px of height here; the label alone gave about 30. */
+    min-height: 44px;
     border: 3px solid var(--card);
     border-top: none;
     border-radius: 0 0 8px 8px;
@@ -309,6 +314,7 @@
     font-weight: 600;
     font-size: 14px;
     padding: 11px 18px;
+    min-height: 44px;
     border-radius: 100px;
     transition: transform 0.15s ease;
   }
@@ -671,157 +677,68 @@
     border-radius: 100px;
   }
 
-  /* LinkedIn-style profile block (About page) */
+  /* Experience entries. The LinkedIn-shaped block this replaces was a copy of
+     another product's UI (R-30); these use the same tape-and-card vocabulary as
+     the service tickets, so the two halves of the site read as one place. */
 
-  .li-profile {
-    margin-top: 0;
-    animation: fadeUp 0.5s ease 0.1s both;
-  }
-
-  .li-banner {
-    height: 88px;
-    border-radius: 10px 10px 0 0;
-    background: linear-gradient(135deg, var(--t-wash), var(--t-terra));
-    border: 1px solid var(--line);
-    border-bottom: none;
-  }
-
-  .li-identity {
+  .record {
     position: relative;
     background: var(--card);
     border: 1px solid var(--line);
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    padding: 0 24px 24px;
-    box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
+    border-radius: 14px;
+    padding: 24px 22px 20px;
+    margin-top: 16px;
+    animation: fadeUp 0.5s ease both;
   }
 
-  .li-avatar {
-    width: 92px;
-    height: 92px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: var(--card);
-    border: 4px solid var(--card);
-    margin-top: -46px;
-    box-shadow: 0 4px 10px rgba(43,42,38,0.2);
-  }
-
-  .li-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(1) contrast(1.05);
-    display: block;
-  }
-
-  .li-name {
-    font-family: 'Space Grotesk', sans-serif;
+  .record-title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 19px;
     font-weight: 700;
-    font-size: 22px;
-    margin-top: 14px;
-  }
-
-  .li-headline {
-    color: var(--ink-dim);
-    font-size: 14px;
-    margin-top: 4px;
-    max-width: 440px;
-  }
-
-  .li-meta {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    color: var(--ink-faint);
-    margin-top: 9px;
-  }
-
-  .li-section { margin-top: 30px; }
-
-  .li-section-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    padding-bottom: 9px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .li-about-text {
     color: var(--ink);
-    font-size: 14.5px;
-    line-height: 1.7;
-    max-width: 520px;
+    line-height: 1.3;
   }
 
-  .li-exp-item {
-    display: flex;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .li-exp-item:first-child { padding-top: 0; }
-  .li-exp-item:last-child { border-bottom: none; padding-bottom: 0; }
-
-  .li-exp-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 9px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in srgb, var(--accent) 16%, #fff);
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
-    color: color-mix(in srgb, var(--accent) 70%, #2b2a26);
-  }
-
-  .li-exp-icon svg { width: 18px; height: 18px; }
-
-  .li-exp-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 14.5px;
-  }
-
-  .li-exp-sub {
+  .record-meta {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
     color: var(--ink-faint);
-    margin-top: 2px;
+    margin-top: 5px;
   }
 
-  .li-exp-desc {
+  .record-body {
+    font-size: 15px;
+    line-height: 1.62;
     color: var(--ink-dim);
-    font-size: 13.5px;
-    line-height: 1.6;
-    margin-top: 6px;
-  }
-
-  @media (max-width: 480px) {
-    .li-identity { padding: 0 18px 20px; }
-    .li-avatar { width: 76px; height: 76px; margin-top: -38px; }
-  }
-
-  .li-exp-photos {
-    display: flex;
-    gap: 8px;
     margin-top: 12px;
   }
 
-  .li-exp-photos img {
-    width: 56px;
+  .record-photos {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .record-photos img {
+    width: 62px;
+    height: auto;
     border-radius: 8px;
     outline: 1px solid var(--line);
     display: block;
   }
 
+  .record-caption {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 8px;
+  }
 
-  /* ---- Split routes: the homepage serves two audiences (neighbours who want
-     a job doing, and people considering hiring me), so it offers both up front
-     instead of making one of them guess which tab is theirs. ---- */
+  /* Split routes: the homepage serves two audiences (neighbours who want a job
+     doing, and people considering hiring me), so it offers both up front
+     instead of making one of them guess which tab is theirs. */
 
   .routes {
     display: grid;
@@ -881,8 +798,8 @@
     color: var(--terra-text);
   }
 
-  /* ---- Contact. Every service said "message for a quote" and the site gave
-     no way to do it, so this is the one block that appears on every page. ---- */
+  /* Contact. Wording changes per page, because a recruiter reading Experience
+     and a neighbour reading Services are not being asked the same thing. */
 
   .contact {
     margin-top: 48px;
@@ -925,6 +842,7 @@
     font-weight: 600;
     font-size: 14px;
     padding: 11px 18px;
+    min-height: 44px;
     border-radius: 100px;
     transition: transform 0.15s ease;
   }
@@ -935,10 +853,12 @@
   .contact-btn--ghost {
     background: transparent;
     color: var(--ink);
-    border: 1px solid var(--line);
+    /* A button edge has to be findable, so it takes the 3:1 border, not the
+       decorative one the cards use. */
+    border: 1px solid var(--line-strong);
   }
 
-  /* ---- Photography empty state: reads as "in progress", not abandoned ---- */
+  /* Photography empty state: reads as in progress, not abandoned. */
 
   .photo-placeholder {
     background: color-mix(in srgb, var(--line) 22%, var(--card));
@@ -969,7 +889,7 @@
     nav.tabs a { font-size: 11px; padding: 7px 6px; }
   }
 
-  /* ---- Focus (R-32) ----
+  /* Focus (R-32).
      One ring for every control. `outline` follows each element's own
      border-radius in current browsers, so the pill-shaped nav tabs and
      buttons get a pill ring without being listed separately.
@@ -1083,3 +1003,146 @@
     .lightbox-stage { order: 1; flex-basis: 100%; }
     .lightbox-nav { order: 2; }
   }
+
+  /* Area, availability and price, answered before a visitor has to ask. A
+     definition list because that is what these are: three questions, three
+     answers, no card needed. */
+
+  .facts {
+    margin-top: 26px;
+    display: grid;
+    gap: 2px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--line);
+    overflow: hidden;
+  }
+
+  .facts > div {
+    background: var(--card);
+    padding: 16px 18px;
+  }
+
+  .facts dt {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .facts dd {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+  }
+
+  @media (min-width: 620px) {
+    /* Three short answers read as a row once there is width for them. */
+    .facts { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* The four things that decide whether a stranger books a fifteen-year-old.
+     Plain list, no icons: the sentences are the content. */
+
+  .promises {
+    list-style: none;
+    margin-top: 16px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .promises li {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-dim);
+  }
+
+  .promises strong {
+    display: block;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  /* Booking form. Square-ish fields against the pill-shaped submit, so the
+     button is visibly the thing that acts and the fields are the thing you
+     fill. */
+
+  .booking {
+    margin-top: 22px;
+    display: grid;
+    gap: 16px;
+    text-align: left;
+  }
+
+  .field { display: grid; gap: 6px; }
+
+  .field label {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--ink);
+  }
+
+  .booking input,
+  .booking select,
+  .booking textarea {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    padding: 11px 12px;
+    width: 100%;
+    /* 16px and this padding clear the 44px tap target without a fixed height. */
+    min-height: 44px;
+  }
+
+  .booking textarea { resize: vertical; line-height: 1.5; }
+
+  .booking button[type="submit"] { justify-self: start; min-height: 44px; }
+  .booking button[disabled] { opacity: 0.6; cursor: progress; }
+
+  .form-notice,
+  .form-status {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .form-notice {
+    color: var(--ink-dim);
+    background: var(--paper);
+    border: 1px dashed var(--line-strong);
+    border-radius: 8px;
+    padding: 11px 13px;
+  }
+
+  .form-status:empty { display: none; }
+
+  /* Status is carried by the words first. The colour and the rule are a second
+     signal, never the only one. */
+  .form-status {
+    padding-left: 12px;
+    border-left: 3px solid var(--ink-dim);
+    color: var(--ink-dim);
+  }
+
+  .form-status.is-ok { border-left-color: var(--t-garden); color: var(--ink); }
+  .form-status.is-warn,
+  .form-status.is-error { border-left-color: var(--terra-text); color: var(--terra-text); }
+
+  .contact-alt {
+    margin-top: 18px;
+    font-size: 14.5px;
+    color: var(--ink-dim);
+  }
+
+  /* Section labels introduce the block below them, so they need air above and
+     very little below. */
+  .facts + .section-label,
+  .tickets + .section-label,
+  .record + .section-label,
+  .promises + .section-label { margin-top: 44px; }

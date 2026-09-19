@@ -1,6 +1,6 @@
-// Animates the nav pill sliding to the clicked tab, then loads the page —
-// each page is a full reload, so the indicator snaps into place on load
-// and only animates in the moment before navigating away.
+// Animates the nav pill sliding to the clicked tab, then loads the page. Each
+// page is a full reload, so the indicator snaps into place on load and only
+// animates in the moment before navigating away.
 (function () {
   var nav = document.querySelector('nav.tabs');
   if (!nav) return;

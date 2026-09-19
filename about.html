@@ -7,17 +7,18 @@
 <meta name="description" content="Freelance odd-jobs & maker near Richmond, UK, plus homelab, tutoring, 3D printing, rowing, and photography.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="About · David Brown">
-<meta property="og:description" content="Freelance odd-jobs & maker near Richmond, UK, plus homelab, tutoring, 3D printing, rowing, and photography.">
+<meta property="og:description" content="David Brown, fifteen, near Richmond: a self-hosted Proxmox homelab, backstage crew for school theatre, photography, and a full set of GCSEs.">
 <meta property="og:image" content="https://dbrown-io.github.io/social-preview.png">
 <meta property="og:url" content="https://dbrown-io.github.io/about.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="About · David Brown">
-<meta name="twitter:description" content="Freelance odd-jobs & maker near Richmond, UK, plus homelab, tutoring, 3D printing, rowing, and photography.">
+<meta name="twitter:description" content="David Brown, fifteen, near Richmond: a self-hosted Proxmox homelab, backstage crew for school theatre, photography, and a full set of GCSEs.">
 <meta name="twitter:image" content="https://dbrown-io.github.io/social-preview.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="canonical" href="https://dbrown-io.github.io/about.html">
+<link rel="stylesheet" href="styles.css?v=12">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
@@ -76,12 +77,12 @@
         <img class="project-thumb" src="images/homelab.jpg" alt="David's homelab setup">
         <div class="project-summary">
           <div class="project-title">Homelab</div>
-          <p class="project-teaser">A MacBook running Proxmox, slowly turning into more self-hosted services than I probably need.</p>
+          <p class="project-teaser">A 2016 MacBook Pro running Proxmox, slowly turning into more self-hosted services than I probably need.</p>
         </div>
         <svg class="project-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </summary>
       <div class="project-detail">
-        <p>Started it to stop paying for cloud services I could just run myself. It's grown into a small stack of self-hosted apps, a proper home network setup, and n8n automations that handle stuff I used to do by hand. Full build notes and configs are on <a class="strip-inline-link" href="https://github.com/dbrown-io/homelab" target="_blank" rel="noopener">GitHub</a>.</p>
+        <p>Started it to stop paying for cloud services I could just run myself. It's grown into a small stack of self-hosted apps, a proper home network setup, and n8n automations that handle stuff I used to do by hand. Build notes, the hardware list and the CAD files are in the <a class="strip-inline-link" href="https://github.com/dbrown-io/homelab" target="_blank" rel="noopener">repo</a>, and there's a fuller write-up on the <a class="strip-inline-link" href="experience.html">Experience</a> page.</p>
       </div>
     </details>
 
@@ -96,31 +97,33 @@
         <svg class="project-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </summary>
       <div class="project-detail">
-        <p>Full gallery's on the way: dog shoots, people shoots, architecture, and travel photos. <a class="strip-inline-link" href="photography.html">See what's up so far &rarr;</a></p>
+        <p>Dog shoots and travel photos are up now; people shoots are what I'm working on next. <a class="strip-inline-link" href="photography.html">See the gallery &rarr;</a></p>
       </div>
     </details>
 
   </div>
 
   <div class="contact">
-    <div class="contact-title">Want to book something?</div>
-    <p class="contact-desc">Tell me what you need and roughly when. I&rsquo;ll come back with a price and a time. Local jobs near Richmond only.</p>
+    <div class="contact-title">Want to talk about any of this?</div>
+    <p class="contact-desc">Questions about the homelab, the photography, or booking me for a job all land in the same place.</p>
     <div class="contact-actions">
       <a class="contact-btn" href="https://instagram.com/dbrown.io" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
         Message me on Instagram
       </a>
-      <!-- TODO: once a custom domain + iCloud mailbox is set up, add:
-           <a class="contact-btn contact-btn--ghost" href="mailto:YOU@YOURDOMAIN?subject=Job%20enquiry">Email me</a> -->
+      <a class="contact-btn contact-btn--ghost" href="services.html#book">Book a job instead</a>
     </div>
+    <p class="contact-alt"><span data-email-slot="Hello"></span></p>
   </div>
 
   <footer>
     <span class="loc">NEAR RICHMOND, UK</span>
+    <span data-email-slot="Hello" data-email-class="strip-inline-link"></span>
   </footer>
 
 </div>
 
 <script src="nav.js" defer></script>
+<script src="contact.js" defer></script>
 </body>
 </html>
