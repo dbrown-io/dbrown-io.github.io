@@ -955,3 +955,21 @@
     nav.tabs a { text-align: center; padding: 9px 10px; }
     .tab-indicator { display: none; }
   }
+
+  /* ---- Focus (R-32) ----
+     One ring for every control. `outline` follows each element's own
+     border-radius in current browsers, so the pill-shaped nav tabs and
+     buttons get a pill ring without being listed separately.
+     :focus-visible, so clicking with a mouse does not leave a ring behind;
+     browsers without it fall back to their default ring rather than none.
+     The offset puts the ring on the paper, outside the dark buttons, where
+     terracotta holds 4.68:1 against the background. */
+
+  :focus-visible {
+    outline: 2px solid var(--terra-text);
+    outline-offset: 3px;
+  }
+
+  /* Images carry a decorative 1px outline already; a focus ring flush against
+     it would read as a thicker border rather than as focus. */
+  .project > summary:focus-visible { outline-offset: -2px; }

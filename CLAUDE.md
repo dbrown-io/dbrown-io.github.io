@@ -23,6 +23,18 @@ Compress before committing: max 1600px on the long edge, WebP quality 82,
 all EXIF stripped. Phone photos carry GPS, so strip it before the first
 commit, not after: once committed it stays in history.
 
+## Style direction (settled, do not "fix")
+
+The paper ground, dot grid, tape swatches, Caveat signature and the
+Inter / Space Grotesk / IBM Plex Mono set are deliberate. David reviewed
+them on 2026-09-19 and kept them.
+
+antislop flags several as Purpose-Gate findings (R-06 typography, R-07
+dot background, R-08 arrows, R-12 shadow, R-14 card uniformity, R-19
+fadeUp). Those rules ask for a written reason, not removal: this section
+is that reason. Do not strip the identity to satisfy them. If a change
+here looks warranted, raise it and let David decide.
+
 <!-- antislop:start -->
 ## antislop
 For UI, copy, people, mobile layout, or code comments work, read `.claude/skills/antislop/SKILL.md` (core) and then the skill for the task:
