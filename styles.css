@@ -623,6 +623,13 @@
     margin-top: 16px;
   }
 
+  .photo-grid .photo {
+    display: block;
+    border-radius: 8px;
+    /* The thumbnail scales on hover; without this the corners spill past it. */
+    overflow: hidden;
+  }
+
   .photo-grid img {
     width: 100%;
     aspect-ratio: 1;
@@ -633,7 +640,8 @@
     transition: transform 0.15s ease;
   }
 
-  .photo-grid img:hover { transform: scale(1.03); }
+  .photo-grid .photo:hover img,
+  .photo-grid .photo:focus-visible img { transform: scale(1.03); }
 
   .photo-placeholder {
     aspect-ratio: 1;
@@ -978,3 +986,100 @@
   /* Images carry a decorative 1px outline already; a focus ring flush against
      it would read as a thicker border rather than as focus. */
   .project > summary:focus-visible { outline-offset: -2px; }
+
+  /* Photo viewer. The paper ground is the wrong backdrop for looking at a
+     photograph, so this one screen inverts to ink and everything else defers
+     to the image. */
+
+  body.lightbox-open { overflow: hidden; }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(24, 23, 20, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 64px 12px 20px;
+  }
+
+  .lightbox[hidden] { display: none; }
+
+  .lightbox-stage {
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .lightbox-stage img {
+    max-width: 100%;
+    max-height: calc(100vh - 150px);
+    object-fit: contain;
+    border-radius: 6px;
+    background: rgba(255, 253, 247, 0.06);
+  }
+
+  .lightbox.is-loading .lightbox-stage img { opacity: 0.25; }
+
+  .lightbox-caption,
+  .lightbox-status {
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
+    max-width: 52ch;
+    /* Paper on the ink scrim, the same pairing as the page inverted. */
+    color: var(--paper);
+  }
+
+  .lightbox-status { position: absolute; bottom: 16px; left: 12px; right: 12px; }
+  .lightbox-status:empty { display: none; }
+
+  .lightbox-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1px solid rgba(243, 239, 230, 0.45);
+    border-radius: 100px;
+    background: transparent;
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .lightbox-nav {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(243, 239, 230, 0.45);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--paper);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .lightbox-close:hover,
+  .lightbox-nav:hover { border-color: var(--paper); }
+
+  .lightbox :focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+
+  @media (max-width: 480px) {
+    .lightbox { padding: 60px 8px 56px; }
+    .lightbox-stage img { max-height: calc(100vh - 190px); }
+    /* The arrows sit under the photo on a phone rather than squeezing it. */
+    .lightbox { flex-wrap: wrap; }
+    .lightbox-stage { order: 1; flex-basis: 100%; }
+    .lightbox-nav { order: 2; }
+  }

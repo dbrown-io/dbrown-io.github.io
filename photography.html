@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=9">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
@@ -37,7 +37,7 @@
     <div class="profile-wrap">
       <div class="profile-card">
         <div class="profile-tape"></div>
-        <img class="profile-photo" src="profile.jpg" alt="David Brown">
+        <img class="profile-photo" src="profile.webp" alt="David Brown">
         <a class="profile-ig" href="https://instagram.com/dbrown.io" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
           @dbrown.io
@@ -55,18 +55,34 @@
 
   <div class="section-label">DOG SHOOTS</div>
   <div class="photo-grid">
-    <img src="images/dog-leila-headshot.webp" loading="lazy" alt="Head-on portrait of Leila, a Rhodesian Ridgeback in a red collar">
-    <img src="images/dog-leila-profile.webp" loading="lazy" alt="Leila sitting on grass, white chest marking catching the light">
-    <img src="images/dog-bonnie-hill.webp" loading="lazy" alt="Bonnie, a wiry grey terrier, among bare winter branches">
-    <img src="images/dog-river-howling.webp" loading="lazy" alt="River, a white Samoyed, standing on a grass verge">
-    <img src="images/leila-cuddle.jpg" loading="lazy" alt="Leila resting her head against someone lying down">
+    <a class="photo" href="images/dog-leila-headshot.webp">
+      <img src="images/dog-leila-headshot-thumb.webp" width="600" height="600" loading="lazy" alt="Head-on portrait of Leila, a Rhodesian Ridgeback in a red collar">
+    </a>
+    <a class="photo" href="images/dog-leila-profile.webp">
+      <img src="images/dog-leila-profile-thumb.webp" width="600" height="600" loading="lazy" alt="Leila sitting on grass, white chest marking catching the light">
+    </a>
+    <a class="photo" href="images/dog-bonnie-hill.webp">
+      <img src="images/dog-bonnie-hill-thumb.webp" width="600" height="600" loading="lazy" alt="Bonnie, a wiry grey terrier, among bare winter branches">
+    </a>
+    <a class="photo" href="images/dog-river-howling.webp">
+      <img src="images/dog-river-howling-thumb.webp" width="600" height="600" loading="lazy" alt="River, a white Samoyed, standing on a grass verge">
+    </a>
+    <a class="photo" href="images/leila-cuddle.webp">
+      <img src="images/leila-cuddle-thumb.webp" width="600" height="600" loading="lazy" alt="Leila resting her head against someone lying down">
+    </a>
   </div>
 
   <div class="section-label">CITY &amp; TRAVEL</div>
   <div class="photo-grid">
-    <img src="images/city-ba-plane.webp" loading="lazy" alt="A British Airways A350 on the taxiway">
-    <img src="images/city-louvre.webp" loading="lazy" alt="The glass pyramid at the Louvre against a bright sky">
-    <img src="images/city-sacre-coeur.webp" loading="lazy" alt="The domes of the Sacre-Coeur, Paris">
+    <a class="photo" href="images/city-ba-plane.webp">
+      <img src="images/city-ba-plane-thumb.webp" width="600" height="600" loading="lazy" alt="A British Airways A350 on the taxiway">
+    </a>
+    <a class="photo" href="images/city-louvre.webp">
+      <img src="images/city-louvre-thumb.webp" width="600" height="600" loading="lazy" alt="The glass pyramid at the Louvre against a bright sky">
+    </a>
+    <a class="photo" href="images/city-sacre-coeur.webp">
+      <img src="images/city-sacre-coeur-thumb.webp" width="600" height="600" loading="lazy" alt="The domes of the Sacre-Coeur, Paris">
+    </a>
   </div>
 
   <div class="section-label">PEOPLE SHOOTS</div>
@@ -97,5 +113,6 @@
 </div>
 
 <script src="nav.js" defer></script>
+<script src="gallery.js" defer></script>
 </body>
 </html>

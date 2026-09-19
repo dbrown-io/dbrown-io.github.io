@@ -27,15 +27,21 @@
   placeIndicator(nav.querySelector('a.active'), false);
   nav.classList.add('js-ready');
 
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
   links.forEach(function (link) {
     link.addEventListener('click', function (e) {
       if (link.classList.contains('active')) return;
+      // Leave open-in-new-tab and middle-click alone: hijacking those loses
+      // the tab the visitor asked for.
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (reduced.matches) return;
       e.preventDefault();
       var href = link.getAttribute('href');
       links.forEach(function (l) { l.classList.remove('active'); });
       link.classList.add('active');
       placeIndicator(link, true);
-      setTimeout(function () { window.location.href = href; }, 320);
+      setTimeout(function () { window.location.href = href; }, 180);
     });
   });
 
