@@ -384,6 +384,7 @@
     text-decoration: none;
     color: var(--ink-dim);
     background: transparent;
+    white-space: nowrap;
     padding: 6px 13px;
     border-radius: 100px;
     border: 1px solid transparent;
@@ -411,12 +412,8 @@
     transition: left 0.32s cubic-bezier(.4,0,.2,1), width 0.32s cubic-bezier(.4,0,.2,1);
   }
 
-  /* once JS is driving the indicator, let it own the pill so the two don't double up.
-     Below 480px the indicator is hidden (the pill wraps to two rows), so the
-     active tab keeps painting its own background. */
-  @media (min-width: 481px) {
-    nav.tabs.js-ready a.active { background: transparent; }
-  }
+  /* once JS is driving the indicator, let it own the pill so the two don't double up */
+  nav.tabs.js-ready a.active { background: transparent; }
 
   .home-intro {
     color: var(--ink);
@@ -941,19 +938,27 @@
     color: var(--ink-faint);
   }
 
-  /* Four tabs don't fit one row on a phone. Kept after the base nav rules
-     so these win on equal specificity. */
+  /* Phone: one row, full width, tabs sharing it evenly. Measured rather than
+     guessed - at 13px/13px the four tabs need 368px and only clear a 430px
+     screen, so the type and padding step down to keep a single line. Kept
+     after the base nav rules so these win on equal specificity. */
   @media (max-width: 480px) {
     nav.tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
       width: 100%;
-      gap: 3px;
-      border-radius: 20px;
       margin-bottom: 36px;
     }
-    nav.tabs a { text-align: center; padding: 9px 10px; }
-    .tab-indicator { display: none; }
+    nav.tabs a {
+      flex: 1 1 auto;
+      text-align: center;
+      font-size: 12px;
+      padding: 7px 8px;
+    }
+  }
+
+  /* 310px of tabs still overflow a 320px screen once the 16px gutters are
+     off, so the smallest phones get one more step down (283px). */
+  @media (max-width: 360px) {
+    nav.tabs a { font-size: 11px; padding: 7px 6px; }
   }
 
   /* ---- Focus (R-32) ----
