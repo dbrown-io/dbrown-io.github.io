@@ -241,7 +241,9 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: color-mix(in srgb, var(--accent) 70%, #2b2a26);
+    /* 45%, not 70%: at 70% the tutor and wash icons sat at 2.77:1 and 3.02:1
+       against their own tinted fill, under the 3:1 non-text bar. */
+    color: color-mix(in srgb, var(--accent) 45%, #2b2a26);
   }
 
   .icon svg { width: 15px; height: 15px; }
@@ -279,7 +281,9 @@
     font-family: 'IBM Plex Mono', monospace;
     font-size: 13px;
     font-weight: 500;
-    color: color-mix(in srgb, var(--accent) 65%, #2b2a26);
+    /* 45%, not 65%: at 65% all six accents fell between 3.14:1 and 4.36:1
+       against the badge fill, under the 4.5:1 bar for 13px text. */
+    color: color-mix(in srgb, var(--accent) 45%, #2b2a26);
     background: color-mix(in srgb, var(--accent) 12%, #fff);
     border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
     padding: 3px 9px;
