@@ -27,21 +27,26 @@ framework. Plain HTML with one shared `styles.css` and three small scripts:
 
 ## Two things David fills in
 
-`contact.js` has an empty `email` and an empty `endpoint` at the top. Until
-`endpoint` is set the booking form shows a visible notice, keeps what was
-typed and points at Instagram, rather than pretending to send. Setting
-`email` fills the footer and every contact block. Put the same address in
-the JSON-LD in `index.html`.
+`contact.js` holds the email (set: `dbrown.io@icloud.com`) and the formspree
+`endpoint`. Until `endpoint` is set the booking form shows a visible notice,
+keeps what was typed and points at Instagram, rather than pretending to send.
+The email also appears in the JSON-LD in `index.html` and `services.html`, so
+a change needs making in all three places.
 
 Do not publish a phone number. See `.claude/review-002-2026-09-19.md`.
 
 ## Content that must stay real
 
 Prices, grades, view counts and testimonials are all either real or absent.
-The "from £X" prices were wrong and came out; the ticket price spans say
-"Quote first" until real rates arrive. There is no testimonials section
-because there are no real testimonials yet. Marked HTML comments show where
-the KidsHustle links and the Year 10 grades go.
+
+No published rates, by David's decision on 2026-09-19: price depends on
+timing and other factors, so every ticket says "Quote first" and the Services
+page says why. Do not add a headline rate without David asking.
+
+The Year 10 mock grades are stated plainly, with no parenthetical arguing that
+one of them was nearly higher. The KidsHustle entry links one real video
+rather than claiming a view count. There is no testimonials section because
+there are no real testimonials yet.
 
 ## Images
 
