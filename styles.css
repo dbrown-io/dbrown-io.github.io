@@ -1188,14 +1188,6 @@
     color: var(--ink-dim);
   }
 
-  /* The footer email is a target on its own, not a link inside a sentence, so
-     it needs the 44px height the surrounding line does not give it. */
-  footer [data-email-slot],
-  footer a[href^="mailto"] {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
 
   /* Section labels introduce the block below them, so they need air above and
      very little below. */

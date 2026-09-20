@@ -1,22 +1,6 @@
 // The form's POST target lives on the form's own action attribute in
-// services.html, which doubles as the no-JS fallback. The email below also
-// appears in the JSON-LD in index.html and services.html, so a change needs
-// making in all three places.
-var SITE = {
-  email: 'dbrown.io@icloud.com'
-};
-
+// services.html, which doubles as the no-JS fallback.
 (function () {
-  if (SITE.email) {
-    document.querySelectorAll('[data-email-slot]').forEach(function (slot) {
-      var a = document.createElement('a');
-      a.href = 'mailto:' + SITE.email + '?subject=' + encodeURIComponent(slot.dataset.emailSlot || 'Enquiry');
-      a.className = slot.dataset.emailClass || '';
-      a.textContent = SITE.email;
-      slot.replaceWith(a);
-    });
-  }
-
   var form = document.querySelector('form.booking');
   if (!form) return;
 

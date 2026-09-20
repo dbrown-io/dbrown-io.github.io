@@ -47,10 +47,13 @@ field is optional and separate.
 The form does not carry `novalidate`: the browser enforces the required fields
 and the email format, so bad input never becomes a formspree error.
 
-The email `dbrown.io@icloud.com` lives in `contact.js` and in the JSON-LD in
-both `index.html` and `services.html`, so a change needs making in all three.
+Do not publish an email address or a phone number anywhere on the site, in
+the JSON-LD included. A plain address in the page source is what harvesters
+collect, and David asked for it out on 2026-09-20. The form and the Instagram
+link are the two contact routes. Formspree holds the address it notifies, so
+enquiries still reach him without it being public.
 
-Do not publish a phone number. See `.claude/review-002-2026-09-19.md`.
+See `.claude/review-002-2026-09-19.md`.
 
 ## Content that must stay real
 
