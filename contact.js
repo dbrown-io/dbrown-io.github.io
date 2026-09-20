@@ -33,6 +33,14 @@ var SITE = {
   // failure points at them rather than listing them a second time.
   var failed = 'That did not send, so nothing reached me. Try again in a minute, or use one of the options below.';
 
+  // ?debug on the URL puts formspree's own reason on the page. A phone has no
+  // console, and a real visitor should never be shown the raw error.
+  var debug = /[?&]debug/.test(location.search);
+
+  function detail(text) {
+    return debug ? failed + ' [' + text + ']' : failed;
+  }
+
   function say(text, kind) {
     status.textContent = text;
     status.className = 'form-status is-' + kind;
@@ -66,11 +74,12 @@ var SITE = {
       // Formspree says why it refused in the response body. Without this the
       // visitor sees "did not send" and nobody can find out what went wrong.
       var reason = (res.data.errors || []).map(function (e) { return e.message; }).join(' ');
-      console.error('Formspree refused this submission (HTTP ' + res.status + '): ' + (reason || JSON.stringify(res.data)));
-      say(failed, 'error');
+      var why = 'HTTP ' + res.status + ': ' + (reason || JSON.stringify(res.data));
+      console.error('Formspree refused this submission. ' + why);
+      say(detail(why), 'error');
     }).catch(function (err) {
       console.error('Could not reach Formspree at all: network error, CORS, or a blocked request.', err);
-      say(failed, 'error');
+      say(detail('never reached formspree: ' + err), 'error');
     }).then(function () {
       submit.disabled = false;
     });
