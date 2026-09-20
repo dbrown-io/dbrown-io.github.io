@@ -39,6 +39,14 @@ Spam is handled by the `_gotcha` honeypot, not reCAPTCHA. reCAPTCHA expects a
 widget on the page and silently fails an AJAX submit, so leave it off in the
 formspree dashboard.
 
+Formspree requires a field named exactly `email` and rejects the submission
+with "email is missing" without it. Do not rename that field. It is also what
+sets Reply-To, so a reply goes straight back to whoever enquired. The phone
+field is optional and separate.
+
+The form does not carry `novalidate`: the browser enforces the required fields
+and the email format, so bad input never becomes a formspree error.
+
 The email `dbrown.io@icloud.com` lives in `contact.js` and in the JSON-LD in
 both `index.html` and `services.html`, so a change needs making in all three.
 

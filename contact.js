@@ -71,9 +71,11 @@ var SITE = {
         say('Got it. I will come back to you with a price and a time.', 'ok');
         return;
       }
-      // Formspree says why it refused in the response body. Without this the
-      // visitor sees "did not send" and nobody can find out what went wrong.
-      var reason = (res.data.errors || []).map(function (e) { return e.message; }).join(' ');
+      // Formspree explains a refusal in the response body, naming the offending
+      // field separately from the message: "is missing" alone says nothing.
+      var reason = (res.data.errors || []).map(function (e) {
+        return (e.field ? e.field + ' ' : '') + e.message;
+      }).join('; ');
       var why = 'HTTP ' + res.status + ': ' + (reason || JSON.stringify(res.data));
       console.error('Formspree refused this submission. ' + why);
       say(detail(why), 'error');
