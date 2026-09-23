@@ -93,6 +93,18 @@ it now uses the same tape-and-card vocabulary as the service tickets. Do not
 reintroduce it.
 
 <!-- antislop:start -->
+## Agent notes
+
+This file is the project brief for whichever coding agent is being used. It
+is named AGENTS.md rather than CLAUDE.md because that is the cross-tool
+standard and reads as project documentation rather than one vendor's config.
+Claude Code falls back to AGENTS.md when no CLAUDE.md exists in the working
+directory or any parent, so do not add one back.
+
+Keep the assistant out of what a visitor sees: no tool name in commit
+messages, trailers, code comments or page copy. David asked for this on
+2026-09-23.
+
 ## antislop
 For UI, copy, people, mobile layout, or code comments work, read `.claude/skills/antislop/SKILL.md` (core) and then the skill for the task:
 - UI / visual: `.claude/skills/antislop-ui/SKILL.md`
