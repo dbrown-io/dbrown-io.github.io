@@ -179,6 +179,10 @@
     gap: 26px 20px;
   }
 
+  /* An odd count leaves the last ticket alone in its row; let it take the
+     full width rather than sit beside a gap. */
+  .tickets .ticket:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
   @media (max-width: 640px) {
     .tickets { grid-template-columns: 1fr; }
   }
