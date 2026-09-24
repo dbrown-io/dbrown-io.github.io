@@ -14,7 +14,10 @@ framework. Plain HTML with one shared `styles.css` and three small scripts:
   `nav.js`, `contact.js` and `gallery.js`: a stale cached script is harder to
   spot than stale CSS, because the page still looks right.
 - `services.html` is the only page with the booking form. Everything else
-  links to `services.html#book`, so there is one form to maintain.
+  links to `services.html#book`, so there is one form to maintain. A link can
+  pick the job in advance with `?job=<key>`, where the key is an option's
+  `data-job` in the form (the service tickets do this, and Experience uses
+  `?job=work`). Keep a ticket's key and its option's `data-job` in step.
 - The contact block is worded per page: a recruiter reading Experience and
   a neighbour reading Services are not being asked the same thing.
 - Colour tokens are contrast-checked. `--ink-dim` and `--ink-faint` are
@@ -23,9 +26,10 @@ framework. Plain HTML with one shared `styles.css` and three small scripts:
 - `--line` is a decorative edge at 1.40:1 and must never bound a control.
   Anything a user has to find, a form field or a button outline, uses
   `--line-strong` (3.68:1 on `--card`, 3.26:1 on `--paper`).
-- `nav.js` slides the tab indicator. The indicator is hidden below 480px,
-  where the nav becomes a 2x2 grid, so the active tab paints its own
-  background there.
+- `nav.js` slides the tab indicator. The nav stays one row at every width;
+  below 480px the tabs share it evenly at a 44px minimum height, and the
+  indicator still runs there. The active tab only paints its own background
+  when JS is off.
 
 ## The booking form
 
@@ -58,6 +62,10 @@ See `.claude/review-002-2026-09-19.md`.
 ## Content that must stay real
 
 Prices, grades, view counts and testimonials are all either real or absent.
+
+Replies are promised within two days, David's figure from 2026-09-24. If
+that stops being true, change the Services and home contact blocks, the
+Experience block and the success message in `contact.js` together.
 
 No published rates, by David's decision on 2026-09-19: price depends on
 timing and other factors, so every ticket says "Quote first" and the Services
