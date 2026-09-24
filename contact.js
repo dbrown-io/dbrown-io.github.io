@@ -22,9 +22,9 @@
     });
   }
 
-  // The Instagram and email routes are printed directly under the form, so a
-  // failure points at them rather than listing them a second time.
-  var failed = 'That did not send, so nothing reached me. Try again in a minute, or use one of the options below.';
+  // The Instagram link is printed directly under the form, so a failure
+  // points at it rather than repeating it.
+  var failed = 'That did not send, so nothing reached me. Try again in a minute, or message me on Instagram below.';
 
   // ?debug on the URL puts formspree's own reason on the page. A phone has no
   // console, and a real visitor should never be shown the raw error.
@@ -45,7 +45,7 @@
     e.preventDefault();
 
     if (!endpoint) {
-      say('This form is not connected yet, so nothing was sent. Your text is still here, so you can copy it into one of the options below.', 'warn');
+      say('This form is not connected yet, so nothing was sent. Your text is still here, so you can copy it into an Instagram message below.', 'warn');
       return;
     }
 
