@@ -12,6 +12,15 @@
   if (!endpoint) {
     notice.hidden = false;
   }
+  // Each service ticket links here as ?job=<key>, so the visitor arrives with
+  // their job already picked instead of the first option by default.
+  var wanted = new URLSearchParams(location.search).get('job');
+  var picker = form.querySelector('select[name="job"]');
+  if (wanted && picker) {
+    Array.prototype.forEach.call(picker.options, function (opt) {
+      if (opt.getAttribute('data-job') === wanted) picker.value = opt.value;
+    });
+  }
 
   // The Instagram and email routes are printed directly under the form, so a
   // failure points at them rather than listing them a second time.
@@ -28,6 +37,8 @@
   function say(text, kind) {
     status.textContent = text;
     status.className = 'form-status is-' + kind;
+    // On a phone the result lands below the button, under the fold.
+    status.scrollIntoView({ block: 'nearest' });
   }
 
   form.addEventListener('submit', function (e) {
@@ -52,7 +63,7 @@
     }).then(function (res) {
       if (res.ok) {
         form.reset();
-        say('Got it. I will come back to you with a price and a time.', 'ok');
+        say('Got it. I will reply within two days.', 'ok');
         return;
       }
       // Formspree explains a refusal in the response body, naming the offending
