@@ -27,6 +27,14 @@
   placeIndicator(nav.querySelector('a.active'), false);
   nav.classList.add('js-ready');
 
+  // The web fonts can arrive after this runs and change every tab's width, so
+  // place the indicator again once they have.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      placeIndicator(nav.querySelector('a.active'), false);
+    });
+  }
+
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   links.forEach(function (link) {

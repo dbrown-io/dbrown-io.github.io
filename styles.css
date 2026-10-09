@@ -676,6 +676,9 @@
 
   .photo-grid img {
     width: 100%;
+    /* The width/height attributes on each img set a fixed 600px height,
+       which beats aspect-ratio; auto lets the square ratio take over. */
+    height: auto;
     aspect-ratio: 1;
     object-fit: cover;
     border-radius: 8px;
@@ -946,6 +949,9 @@
      off, so the smallest phones get one more step down (283px). */
   @media (max-width: 360px) {
     nav.tabs a { font-size: 11px; padding: 7px 6px; }
+    /* "Photography", the longest title, ran 31px under the photo at 33px on
+       a 320px screen. */
+    h1 { font-size: 27px; }
   }
 
   /* Focus (R-32).
@@ -1167,7 +1173,9 @@
 
   .booking textarea { resize: vertical; line-height: 1.5; }
 
-  .booking button[type="submit"] { justify-self: start; min-height: 44px; }
+  /* Buttons do not inherit the page font by default, so without this the
+     submit fell back to the browser's own font. */
+  .booking button[type="submit"] { justify-self: start; min-height: 44px; font-family: inherit; cursor: pointer; }
   .booking button[disabled] { opacity: 0.6; cursor: progress; }
 
   .form-notice,
