@@ -1241,3 +1241,209 @@
   .tickets + .section-label,
   .record + .section-label,
   .promises + .section-label { margin-top: 44px; }
+
+  /* Photo desk (desk.js). The prints only exist when the script runs; without
+     it the grids it replaces stay as they are. The stage pins for one screen
+     of scrolling while the pile sorts itself into a grid. */
+
+  .photo-grid.is-replaced,
+  .section-label.is-replaced { display: none; }
+
+  .desk-track {
+    position: relative;
+    height: 190vh;
+    height: 190svh;
+  }
+
+  .desk-stage {
+    --cw: 160px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    overflow: clip;
+    /* Keeps the prints' z-index inside the desk, under the photo viewer. */
+    isolation: isolate;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .desk-hint {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    margin: 0;
+    max-width: 52ch;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-dim);
+    pointer-events: none;
+  }
+
+  .desk-tools {
+    position: absolute;
+    left: 0;
+    bottom: 18px;
+    z-index: 900;
+    transition: opacity 0.2s ease, visibility 0s linear 0s;
+  }
+  [data-mode="index"] .desk-tools {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+
+  .print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--cw);
+    height: calc(var(--cw) * 1.22);
+    transform-origin: 50% 50%;
+    will-change: transform;
+    visibility: hidden;
+    cursor: grab;
+  }
+  /* On a touch screen a vertical swipe still scrolls the page (which is what
+     sorts the pile); only a sideways swipe throws a print. */
+  [data-mode="pile"] .print { touch-action: pan-y; }
+  [data-mode="index"] .print { cursor: pointer; }
+  .print.is-held { cursor: grabbing; }
+
+  /* A flat flip (scaleX through zero) rather than a 3D one: no backface
+     tricks to go wrong while a print is mid-throw. */
+  .print-inner {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .print.is-flipped .print-inner { transform: scaleX(-1); }
+
+  .print-face {
+    position: absolute;
+    inset: 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(43,42,38,0.1), 0 6px 16px -8px rgba(43,42,38,0.35);
+    transition: box-shadow 0.2s ease, visibility 0s linear 0.3s;
+  }
+  .print.is-flipped .print-front,
+  .print:not(.is-flipped) .print-back { visibility: hidden; }
+  .print.is-held .print-face { box-shadow: 0 2px 2px rgba(43,42,38,0.1), 0 22px 34px -14px rgba(43,42,38,0.5); }
+
+  .print .photo {
+    position: absolute;
+    left: 6%;
+    top: calc(var(--cw) * 0.06);
+    width: 88%;
+    height: calc(var(--cw) * 0.88);
+    display: block;
+    overflow: hidden;
+    background: var(--line);
+    -webkit-user-drag: none;
+  }
+  .print .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* Names written on the bottom of the print, in the signature's hand. */
+  .print-name {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 0;
+    height: calc(var(--cw) * 0.28);
+    display: flex;
+    align-items: center;
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: calc(var(--cw) * 0.15);
+    line-height: 1;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .print-tape {
+    position: absolute;
+    width: calc(var(--cw) * 0.3);
+    height: calc(var(--cw) * 0.11);
+    background: var(--accent);
+    opacity: 0.9;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    pointer-events: none;
+  }
+  .print-tape--top { left: 50%; top: 0; transform: translate(-50%, -45%) rotate(-3deg); }
+  .print-tape--corner { left: -5%; top: 1%; transform: rotate(-35deg); }
+  .print-tape--side { right: -6%; top: 30%; transform: rotate(80deg); }
+
+  .print-back {
+    transform: scaleX(-1);
+    padding: 10% 9%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+  }
+  .print-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: max(10px, calc(var(--cw) * 0.06));
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .print-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: max(14px, calc(var(--cw) * 0.11));
+    line-height: 1.15;
+    margin-top: 4px;
+  }
+  .print-kind {
+    font-size: max(12px, calc(var(--cw) * 0.075));
+    color: var(--ink-dim);
+  }
+  .print-note {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: max(16px, calc(var(--cw) * 0.12));
+    line-height: 1.1;
+    color: var(--ink);
+  }
+
+  /* Keyboard route to turning a print over. Out of sight until it has focus,
+     because a pointer turns a print over by tapping it. */
+  .print-key {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 50%);
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    padding: 6px 12px;
+    min-height: 32px;
+    white-space: nowrap;
+  }
+  .print-key:focus-visible { opacity: 1; pointer-events: auto; }
+  .print .photo:focus-visible { outline-offset: -3px; }

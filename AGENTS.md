@@ -2,8 +2,8 @@
 
 Static personal site for David Brown: local services near Richmond, plus
 experience, projects and a photography gallery. No build step, no
-framework. Plain HTML with one shared `styles.css` and three small scripts:
-`nav.js`, `contact.js` and `gallery.js` (photography only).
+framework. Plain HTML with one shared `styles.css` and four small scripts:
+`nav.js`, `contact.js`, and `gallery.js` and `desk.js` (photography only).
 
 ## Layout
 
@@ -11,8 +11,8 @@ framework. Plain HTML with one shared `styles.css` and three small scripts:
   assessing him professionally. Both routes live under the H1.
 - `styles.css` is the single stylesheet. Bump the `?v=N` query on every
   page when changing it, or browsers serve the old file. The same applies to
-  `nav.js`, `contact.js` and `gallery.js`: a stale cached script is harder to
-  spot than stale CSS, because the page still looks right.
+  `nav.js`, `contact.js`, `gallery.js` and `desk.js`: a stale cached script is
+  harder to spot than stale CSS, because the page still looks right.
 - `services.html` is the only page with the booking form. Everything else
   links to `services.html#book`, so there is one form to maintain. A link can
   pick the job in advance with `?job=<key>`, where the key is an option's
@@ -30,6 +30,24 @@ framework. Plain HTML with one shared `styles.css` and three small scripts:
   below 480px the tabs share it evenly at a 44px minimum height, and the
   indicator still runs there. The active tab only paints its own background
   when JS is off.
+
+## The photo desk
+
+`desk.js` turns the Photography grids into a pile of prints: throw them, tap
+one to turn it over, and scrolling sorts them into a grid, after which a tap
+opens the full-size viewer from `gallery.js`. The prints are the grid's own
+`a.photo` links moved onto the desk, so with JS off the grids stay as they
+are and the viewer works either way.
+
+Each photo link carries `data-group`, `data-name`, `data-kind` and
+`data-note` for the print's name and the back of the card. A link without
+`data-name` stays out of the pile. Keep the back real: it is written from
+what the photo shows, the same as its alt text. A new photo needs those four
+attributes to join the pile.
+
+On a touch screen a vertical swipe always scrolls the page and only a
+sideways swipe throws a print, so the pile never traps a thumb. Reduced
+motion keeps the pile still and the sort jumps instead of animating.
 
 ## The booking form
 
