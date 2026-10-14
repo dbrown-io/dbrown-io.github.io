@@ -2,8 +2,9 @@
 
 Static personal site for David Brown: local services near Richmond, plus
 experience, projects and a photography gallery. No build step, no
-framework. Plain HTML with one shared `styles.css` and four small scripts:
-`nav.js`, `contact.js`, and `gallery.js` and `desk.js` (photography only).
+framework. Plain HTML with one shared `styles.css` and five small scripts:
+`nav.js`, `motion.js`, `contact.js`, and `gallery.js` and `desk.js`
+(photography only).
 
 ## Layout
 
@@ -11,8 +12,9 @@ framework. Plain HTML with one shared `styles.css` and four small scripts:
   assessing him professionally. Both routes live under the H1.
 - `styles.css` is the single stylesheet. Bump the `?v=N` query on every
   page when changing it, or browsers serve the old file. The same applies to
-  `nav.js`, `contact.js`, `gallery.js` and `desk.js`: a stale cached script is
-  harder to spot than stale CSS, because the page still looks right.
+  `nav.js`, `motion.js`, `contact.js`, `gallery.js` and `desk.js`: a stale
+  cached script is harder to spot than stale CSS, because the page still
+  looks right.
 - `services.html` is the only page with the booking form. Everything else
   links to `services.html#book`, so there is one form to maintain. A link can
   pick the job in advance with `?job=<key>`, where the key is an option's
@@ -30,6 +32,27 @@ framework. Plain HTML with one shared `styles.css` and four small scripts:
   below 480px the tabs share it evenly at a 44px minimum height, and the
   indicator still runs there. The active tab only paints its own background
   when JS is off.
+
+## Motion
+
+Cards are paper, so they arrive like paper: the `land` keyframes in
+`styles.css` drop each ticket, route card, Experience record, project card,
+contact block and the Services facts in from slightly above, tilted, and
+settle them flat. Neighbours alternate their angle (`--tilt`) so a row never
+lands in step. Cards already on screen land on load from CSS alone, so they
+show with JS off. `motion.js` holds back the cards that start below the fold
+(`.land-wait`) and lands them as they are scrolled to.
+
+Hover lifts a card 3px with a half-degree lean (`--lean`) and peels its tape.
+That uses the `translate` and `rotate` properties, not `transform`, because
+the landing animation's fill holds `transform` and would cancel it.
+
+The taped profile photo in every header can be grabbed and flicked
+(`motion.js`); it springs back onto its tape. The Instagram link under it is
+not part of the grab.
+
+Reduced motion turns all of it off. Text keeps the quieter `fadeUp`: it is
+not paper.
 
 ## The photo desk
 
@@ -104,7 +127,14 @@ commit, not after: once committed it stays in history.
 
 The paper ground, dot grid, tape swatches, Caveat signature and the
 Inter / Space Grotesk / IBM Plex Mono set are deliberate. David reviewed
-them on 2026-09-19 and kept them.
+them on 2026-09-19 and kept them, and asked for the fonts again on
+2026-10-14 after trying alternatives.
+
+The fonts are served from `fonts/` (Latin subset, WOFF2, with each font's
+OFL licence beside it), not from Google: some networks block
+fonts.googleapis.com and the page then falls back to the system font. Caveat
+is for the signature only; the photo prints use the same fonts as the rest
+of the site.
 
 antislop flags several as Purpose-Gate findings (R-06 typography, R-07
 dot background, R-08 arrows, R-12 shadow, R-14 card uniformity, R-19

@@ -1,3 +1,43 @@
+  /* Fonts are served from this site rather than Google's, so they load on
+     networks that block fonts.googleapis.com and the page makes no request to
+     a third party. Latin subset only, which covers every character on the
+     site (Sacré-Cœur included). Licences sit next to the files in fonts/. */
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url('fonts/inter-latin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 500 700;
+    font-display: swap;
+    src: url('fonts/space-grotesk-latin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/ibm-plex-mono-400-latin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('fonts/ibm-plex-mono-500-latin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Caveat';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('fonts/caveat-latin.woff2') format('woff2');
+  }
+
   :root {
     --paper: #f3efe6;
     --card: #fffdf7;
@@ -57,7 +97,8 @@
     width: 128px;
     flex-shrink: 0;
     order: 2;
-    animation: fadeUp 0.5s ease both;
+    --tilt: 5deg;
+    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
   }
 
   .profile-card {
@@ -112,6 +153,16 @@
   }
 
   .profile-ig:hover { opacity: 0.85; }
+
+  /* motion.js lets the photo be grabbed and flicked; it springs back. A
+     vertical swipe on a phone still scrolls the page. */
+  .profile-card.is-flickable .profile-photo {
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .profile-card.is-held .profile-photo { cursor: grabbing; }
   .profile-ig svg { width: 13px; height: 13px; }
 
   .signature {
@@ -194,7 +245,8 @@
     border-radius: 4px;
     padding: 20px 20px 20px 24px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: fadeUp 0.45s ease both;
+    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    transition: translate 0.2s ease, rotate 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
   }
@@ -383,6 +435,37 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* Cards are paper, so they arrive the way paper does: dropped from a little
+     above, tilted, then settling flat with a small bounce. --tilt is the angle
+     each one comes in at; neighbours alternate so a row never lands in step.
+     motion.js holds back the cards below the fold until they are scrolled to. */
+  @keyframes land {
+    0% { opacity: 0; transform: translateY(-22px) rotate(var(--tilt)) scale(1.03); }
+    55% { opacity: 1; transform: translateY(3px) rotate(calc(var(--tilt) * -0.25)) scale(1); }
+    80% { transform: translateY(-1px) rotate(calc(var(--tilt) * 0.08)); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  .ticket, .route, .record, .project, .contact, .facts { --tilt: -1.6deg; --lean: -0.5deg; }
+  .ticket:nth-child(even), .route:nth-child(even), .project:nth-child(even), .record:nth-of-type(even) { --tilt: 1.4deg; --lean: 0.5deg; }
+  .ticket:nth-child(3n) { --tilt: -0.8deg; }
+  .contact, .facts { --tilt: -0.6deg; }
+
+  /* Held back by motion.js until scrolled into view. */
+  .land-wait { animation: none !important; opacity: 0; }
+
+  /* Hover lifts a card off the desk and the tape starts to peel. Done with the
+     translate and rotate properties so it adds to the landing transform rather
+     than fighting it. */
+  .ticket:hover, .ticket:focus-within {
+    translate: 0 -3px;
+    rotate: var(--lean);
+    box-shadow: 0 6px 0 var(--line), 0 18px 30px -16px rgba(43,42,38,0.45);
+  }
+  .tape { transition: translate 0.2s ease, rotate 0.2s ease; }
+  .ticket:hover .tape, .ticket:focus-within .tape,
+  .project:hover .tape { translate: 0 -2px; rotate: -4deg; }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
@@ -564,12 +647,13 @@
     border: 1px solid var(--line);
     border-radius: 4px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: fadeUp 0.45s ease both;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    transition: translate 0.2s ease, rotate 0.2s ease, box-shadow 0.2s ease;
   }
 
   .project:hover {
-    transform: translateY(-3px);
+    translate: 0 -3px;
+    rotate: var(--lean);
     box-shadow: 0 6px 0 var(--line), 0 18px 32px -16px rgba(43,42,38,0.45);
   }
 
@@ -729,7 +813,7 @@
     border-radius: 14px;
     padding: 24px 22px 20px;
     margin-top: 16px;
-    animation: fadeUp 0.5s ease both;
+    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
   }
 
   .record-title {
@@ -803,7 +887,6 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     margin-top: 26px;
-    animation: fadeUp 0.5s ease 0.15s both;
   }
 
   @media (max-width: 560px) {
@@ -819,11 +902,15 @@
     text-decoration: none;
     color: var(--ink);
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    animation-delay: 0.12s;
+    transition: translate 0.2s ease, rotate 0.2s ease, box-shadow 0.2s ease;
   }
+  .route:nth-child(2) { animation-delay: 0.2s; }
 
   .route:hover {
-    transform: translateY(-2px);
+    translate: 0 -3px;
+    rotate: var(--lean);
     box-shadow: 0 5px 0 var(--line), 0 16px 28px -16px rgba(43,42,38,0.45);
   }
 
@@ -866,7 +953,7 @@
     border-radius: 10px;
     padding: 24px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: fadeUp 0.5s ease both;
+    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
   }
 
   .contact-title {
@@ -1081,6 +1168,7 @@
     border-radius: 12px;
     background: var(--line);
     overflow: hidden;
+    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
   }
 
   .facts > div {
@@ -1354,7 +1442,6 @@
     pointer-events: none;
   }
 
-  /* Names written on the bottom of the print, in the signature's hand. */
   .print-name {
     position: absolute;
     left: 8%;
@@ -1363,9 +1450,9 @@
     height: calc(var(--cw) * 0.28);
     display: flex;
     align-items: center;
-    font-family: 'Caveat', cursive;
-    font-weight: 600;
-    font-size: calc(var(--cw) * 0.15);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: max(13px, calc(var(--cw) * 0.1));
     line-height: 1;
     color: var(--ink);
     white-space: nowrap;
@@ -1417,10 +1504,8 @@
     margin-top: auto;
     padding-top: 8px;
     border-top: 1px dashed var(--line);
-    font-family: 'Caveat', cursive;
-    font-weight: 600;
-    font-size: max(16px, calc(var(--cw) * 0.12));
-    line-height: 1.1;
+    font-size: max(12px, calc(var(--cw) * 0.08));
+    line-height: 1.35;
     color: var(--ink);
   }
 
