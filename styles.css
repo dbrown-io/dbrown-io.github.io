@@ -203,7 +203,8 @@
   .routes + .home-intro { margin-top: 26px; }
 
   .routes + .section-label,
-  .home-intro + .section-label { margin-top: 44px; }
+  .home-intro + .section-label,
+  .home-intro + .timeline { margin-top: 44px; }
 
   .section-label {
     font-family: 'IBM Plex Mono', monospace;
@@ -944,10 +945,10 @@
     color: var(--ink);
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
     animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
-    animation-delay: 0.12s;
+    --land-delay: 0.12s;
     transition: translate 0.2s ease, rotate 0.2s ease, box-shadow 0.2s ease;
   }
-  .route:nth-child(2) { animation-delay: 0.2s; }
+  .route:nth-child(2) { --land-delay: 0.2s; }
 
   .route:hover {
     translate: 0 -3px;
@@ -1573,3 +1574,70 @@
   }
   .print-key:focus-visible { opacity: 1; pointer-events: auto; }
   .print .photo:focus-visible { outline-offset: -3px; }
+
+  /* Landing delays come from --land-delay, so a card's tape can follow its
+     own card. Kept last so it wins over each card's animation shorthand. */
+  .ticket, .route, .record, .project, .contact, .facts, .profile-wrap {
+    animation-delay: var(--land-delay, 0s);
+  }
+
+  /* Tape is pressed on just after its card lands: it arrives lifted and
+     crooked, squashes flat, and settles. Fill is backwards only, so once it
+     has played the tape is back under its normal styles and the hover peel
+     works. A card held back by motion.js holds its tape back too. */
+  @keyframes tape-press {
+    0%   { opacity: 0; translate: 0 -10px; scale: 1.2 1.35; rotate: -7deg; box-shadow: 0 10px 14px rgba(0,0,0,0.14); }
+    55%  { opacity: 0.9; translate: 0 1px; scale: 1.03 0.9; rotate: 0deg; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }
+    100% { opacity: 0.9; translate: 0 0; scale: 1; rotate: 0deg; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
+  }
+  .ticket .tape, .record .tape, .project .tape, .profile-tape {
+    animation: tape-press 0.45s cubic-bezier(0.3, 0.7, 0.4, 1) backwards;
+    animation-delay: calc(var(--land-delay, 0s) + 0.42s);
+  }
+  .land-wait .tape { animation: none; }
+
+  /* Experience: a stitched thread runs down the left of the entries and draws
+     itself down to the reading line as you scroll (motion.js sets --p),
+     filling each section's dot as it reaches it. Without the script the
+     thread is drawn in full and every dot is filled. */
+  .timeline { position: relative; --thread-x: -13px; }
+  .timeline::before,
+  .timeline::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    bottom: 24px;
+    left: var(--thread-x);
+    width: 2px;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .timeline::before { background: var(--line); }
+  .timeline::after {
+    background: repeating-linear-gradient(to bottom, var(--terra-text) 0 7px, transparent 7px 11px);
+    /* Clipped rather than scaled, so the stitches keep their length. */
+    clip-path: inset(0 0 calc((1 - var(--p, 1)) * 100%) 0);
+  }
+  .timeline .section-label { position: relative; }
+  .timeline .section-label::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--thread-x) - 4px);
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    border-radius: 50%;
+    background: var(--terra-text);
+    border: 2px solid var(--terra-text);
+    z-index: 1;
+    transition: background 0.25s ease, border-color 0.25s ease, scale 0.25s ease;
+  }
+  .timeline .section-label.is-pending::before {
+    background: var(--paper);
+    border-color: var(--line-strong);
+    scale: 0.8;
+  }
+  @media (max-width: 480px) {
+    .timeline { --thread-x: -10px; }
+  }

@@ -24,7 +24,7 @@
         if (!e.isIntersecting) return;
         var c = e.target;
         io.unobserve(c);
-        c.style.animationDelay = (k++ * 0.08) + 's';
+        c.style.setProperty('--land-delay', (k++ * 0.08) + 's');
         c.classList.remove('land-wait');
       });
     }, { rootMargin: '0px 0px -8% 0px' });
@@ -37,8 +37,8 @@
   // motion runs forwards scrolling down and backwards scrolling up. The CSS
   // reads --p and treats a missing one as 1, the finished state.
   var scrubs = [];
-  function scrub(el, from, to, shape) {
-    scrubs.push({ el: el, from: from, to: to, shape: shape, last: -1 });
+  function scrub(el, from, to, shape, after) {
+    scrubs.push({ el: el, from: from, to: to, shape: shape, after: after, last: -1 });
   }
   function smooth(t) { return t * t * (3 - 2 * t); }
 
@@ -74,6 +74,27 @@
     scrub(p, 0.92, 0.42);
   });
 
+  // Experience: the thread draws down to a reading line 60% of the way down
+  // the screen, and each section's dot fills once the thread has reached it.
+  // The thread runs from 8px below the top of .timeline to 24px above its
+  // bottom (styles.css), so --p is measured over that length.
+  Array.prototype.slice.call(document.querySelectorAll('.timeline')).forEach(function (tl) {
+    var labels = Array.prototype.slice.call(tl.querySelectorAll('.section-label'));
+    scrubs.push({
+      el: tl,
+      last: -1,
+      progress: function (r, vh) {
+        return (vh * 0.6 - r.top - 8) / Math.max(1, r.height - 32);
+      },
+      after: function (t) {
+        var reach = 8 + t * (tl.offsetHeight - 32);
+        labels.forEach(function (l) {
+          l.classList.toggle('is-pending', l.offsetTop + l.offsetHeight / 2 > reach);
+        });
+      }
+    });
+  });
+
   var ticking = false;
   function update() {
     ticking = false;
@@ -86,13 +107,16 @@
       // Far off screen: settle it as finished (above) or not started (below),
       // so a fast jump past one never leaves it half drawn.
       var t = r.bottom < -vh ? 1 : r.top > vh * 2 ? 0
-        : atEnd ? 1 : (s.from * vh - r.top) / ((s.from - s.to) * vh);
+        : atEnd ? 1
+        : s.progress ? s.progress(r, vh)
+        : (s.from * vh - r.top) / ((s.from - s.to) * vh);
       t = Math.max(0, Math.min(1, t));
       if (s.shape) t = s.shape(t);
       t = Math.round(t * 1000) / 1000;
       if (t === s.last) return;
       s.last = t;
       s.el.style.setProperty('--p', t);
+      if (s.after) s.after(t);
     });
   }
   function requestUpdate() {

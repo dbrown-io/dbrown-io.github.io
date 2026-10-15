@@ -43,6 +43,12 @@ lands in step. Cards already on screen land on load from CSS alone, so they
 show with JS off. `motion.js` holds back the cards that start below the fold
 (`.land-wait`) and lands them as they are scrolled to.
 
+Each card's tape is pressed on just after the card lands (`tape-press`):
+it arrives lifted and crooked and squashes flat. Landing delays live in
+`--land-delay` (set inline on the tickets, on `.route:nth-child(2)`, and by
+`motion.js` for cards landing on scroll) so the tape can follow its own card.
+Set a card's delay through `--land-delay`, never `animation-delay`.
+
 Hover lifts a card 3px with a half-degree lean (`--lean`) and peels its tape.
 That uses the `translate` and `rotate` properties, not `transform`, because
 the landing animation's fill holds `transform` and would cancel it.
@@ -60,6 +66,10 @@ state. That is what shows with JS off or reduced motion on:
 - Intro paragraphs (`.home-intro`) ink in word by word, from `--ink-faint`
   to `--ink`. The start colour passes AA, so the line is readable at every
   point; do not start it any paler.
+- Experience wraps its sections in `.timeline`: a stitched terracotta
+  thread down the left draws itself to a reading line 60% down the screen,
+  and each section label's dot fills as the thread reaches it
+  (`.is-pending` until then).
 - The KidsHustle screenshots on Experience start stacked in the middle,
   fanned like a hand of cards, and spread into a row (two by two on a
   phone) big enough to read. `--cx`/`--cy` are each screen's distance from
