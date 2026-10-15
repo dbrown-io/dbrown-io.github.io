@@ -51,6 +51,20 @@ The taped profile photo in every header can be grabbed and flicked
 (`motion.js`); it springs back onto its tape. The Instagram link under it is
 not part of the grab.
 
+Some motion is tied to scroll position rather than played once, so it runs
+backwards when scrolling up. `motion.js` sets `--p` from 0 to 1 on the
+element and the CSS reads it, treating a missing `--p` as 1, the finished
+state. That is what shows with JS off or reduced motion on:
+
+- Section label rules draw across from the label as they scroll in.
+- Intro paragraphs (`.home-intro`) ink in word by word, from `--ink-faint`
+  to `--ink`. The start colour passes AA, so the line is readable at every
+  point; do not start it any paler.
+- The KidsHustle screenshots on Experience start stacked in the middle,
+  fanned like a hand of cards, and spread into a row (two by two on a
+  phone) big enough to read. `--cx`/`--cy` are each screen's distance from
+  the middle in grid slots.
+
 Reduced motion turns all of it off. Text keeps the quieter `fadeUp`: it is
 not paper.
 

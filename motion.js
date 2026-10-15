@@ -31,6 +31,81 @@
     below.forEach(function (c) { io.observe(c); });
   }
 
+  /* ------------------------------------------ scroll-linked (scrubbed) */
+  // Each entry sets --p on its element from 0 to 1 as the element's top
+  // travels from `from` to `to` (fractions of the screen height), so the
+  // motion runs forwards scrolling down and backwards scrolling up. The CSS
+  // reads --p and treats a missing one as 1, the finished state.
+  var scrubs = [];
+  function scrub(el, from, to, shape) {
+    scrubs.push({ el: el, from: from, to: to, shape: shape, last: -1 });
+  }
+  function smooth(t) { return t * t * (3 - 2 * t); }
+
+  Array.prototype.slice.call(document.querySelectorAll('.section-label')).forEach(function (el) {
+    scrub(el, 0.95, 0.68);
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('.record-photos')).forEach(function (el) {
+    scrub(el, 1.0, 0.4, smooth);
+  });
+
+  // Intro words ink in one after another. The link inside an intro keeps its
+  // own element; only its text is split.
+  Array.prototype.slice.call(document.querySelectorAll('.home-intro')).forEach(function (p) {
+    var n = 0;
+    var walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+    var texts = [];
+    while (walker.nextNode()) texts.push(walker.currentNode);
+    texts.forEach(function (t) {
+      var frag = document.createDocumentFragment();
+      t.nodeValue.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+        var w = document.createElement('span');
+        w.className = 'w';
+        w.style.setProperty('--i', n++);
+        w.textContent = part;
+        frag.appendChild(w);
+      });
+      t.parentNode.replaceChild(frag, t);
+    });
+    p.style.setProperty('--n', n);
+    scrub(p, 0.92, 0.42);
+  });
+
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var vh = window.innerHeight;
+    // At the very bottom of the page nothing can scroll any higher, so
+    // everything still on its way finishes.
+    var atEnd = window.scrollY + vh >= document.documentElement.scrollHeight - 2;
+    scrubs.forEach(function (s) {
+      var r = s.el.getBoundingClientRect();
+      // Far off screen: settle it as finished (above) or not started (below),
+      // so a fast jump past one never leaves it half drawn.
+      var t = r.bottom < -vh ? 1 : r.top > vh * 2 ? 0
+        : atEnd ? 1 : (s.from * vh - r.top) / ((s.from - s.to) * vh);
+      t = Math.max(0, Math.min(1, t));
+      if (s.shape) t = s.shape(t);
+      t = Math.round(t * 1000) / 1000;
+      if (t === s.last) return;
+      s.last = t;
+      s.el.style.setProperty('--p', t);
+    });
+  }
+  function requestUpdate() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }
+  if (scrubs.length) {
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    update();
+  }
+
   /* ---------------------------------------------- flickable profile photo */
   var card = document.querySelector('.profile-card');
   var photo = card && card.querySelector('.profile-photo');

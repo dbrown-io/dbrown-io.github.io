@@ -217,11 +217,15 @@
     gap: 10px;
   }
 
+  /* The rule draws across from the label as it scrolls in (motion.js sets
+     --p); without the script it is simply full width. */
   .section-label::after {
     content: '';
     flex: 1;
     height: 1px;
     background: var(--line);
+    transform: scaleX(var(--p, 1));
+    transform-origin: left center;
   }
 
   .tickets {
@@ -541,6 +545,15 @@
     animation: fadeUp 0.5s ease 0.1s both;
   }
 
+  /* motion.js wraps each word of an intro in .w and sets --p on the paragraph
+     as it scrolls up: the words ink in one after another, from --ink-faint to
+     --ink. --ink-faint already passes AA, so the line is readable at every
+     point on the way. */
+  .home-intro .w {
+    --lit: clamp(0, calc(var(--p, 1) * (var(--n) + 4) - var(--i)), 1);
+    color: color-mix(in srgb, var(--ink) calc(var(--lit) * 100%), var(--ink-faint));
+  }
+
   .strips {
     display: flex;
     flex-direction: column;
@@ -839,19 +852,47 @@
     margin-top: 12px;
   }
 
+  /* The KidsHustle screenshots. As the row scrolls up the screen, motion.js
+     takes --p from 0 to 1: at 0 the four screens are stacked in the middle,
+     fanned like a hand of cards; at 1 they sit in a row, big enough to read.
+     Without the script --p is 1, so the row is just there. --cx and --cy are
+     how many slots each screen sits from the middle of the grid. */
   .record-photos {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-    flex-wrap: wrap;
+    --gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 150px));
+    gap: var(--gap);
+    margin-top: 18px;
   }
 
   .record-photos img {
-    width: 62px;
+    --q: calc(1 - var(--p, 1));
+    position: relative;
+    width: 100%;
     height: auto;
-    border-radius: 8px;
+    border-radius: 10px;
     outline: 1px solid var(--line);
+    box-shadow: 0 10px 22px -14px rgba(43,42,38,0.45);
+    transform-origin: 50% 90%;
+    transform:
+      translate(calc(var(--cx) * (100% + var(--gap)) * var(--q)),
+                calc((var(--cy) * (100% + var(--gap)) + var(--drop)) * var(--q)))
+      rotate(calc(var(--fan) * var(--q)))
+      scale(calc(1 - 0.22 * var(--q)));
     display: block;
+  }
+  .record-photos img:nth-child(1) { --cx: 1.5;  --cy: 0; --fan: -15deg; --drop: 22px; z-index: 1; }
+  .record-photos img:nth-child(2) { --cx: 0.5;  --cy: 0; --fan: -5deg;  --drop: 4px;  z-index: 3; }
+  .record-photos img:nth-child(3) { --cx: -0.5; --cy: 0; --fan: 5deg;   --drop: 4px;  z-index: 4; }
+  .record-photos img:nth-child(4) { --cx: -1.5; --cy: 0; --fan: 15deg;  --drop: 22px; z-index: 2; }
+
+  /* Two by two on a phone, stacked to the middle of that grid instead. */
+  @media (max-width: 520px) {
+    .record-photos { grid-template-columns: repeat(2, minmax(0, 150px)); }
+    .record-photos img:nth-child(1) { --cx: 0.5;  --cy: 0.5; }
+    .record-photos img:nth-child(2) { --cx: -0.5; --cy: 0.5; }
+    .record-photos img:nth-child(3) { --cx: 0.5;  --cy: -0.5; }
+    .record-photos img:nth-child(4) { --cx: -0.5; --cy: -0.5; }
   }
 
   .record-photo {
