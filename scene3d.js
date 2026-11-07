@@ -16,8 +16,9 @@
 //   build(THREE, kit) -> { root, shot, update(t) }
 // root: an Object3D added to the scene. shot: { radius, height, angle,
 // target } for the camera (angle in degrees, 0 = front). update(t): pose the
-// model for t from 0 to 1. kit holds the shared helpers below.
-const V = '1';
+// model for t from 0 to 1. Optional target(t) returns the look-at point for
+// t, so the camera can follow the model. kit holds the shared helpers below.
+const V = '2';
 const DEG = Math.PI / 180;
 
 const clamp01 = (n) => Math.max(0, Math.min(1, n));
@@ -131,7 +132,7 @@ async function mount(fig, reduced) {
   const name = fig.getAttribute('data-model');
   const stage = fig.querySelector('.scene3d-stage');
   if (!name || !stage) return;
-  const THREE = await import('./vendor/three/three.module.min.js?v=' + V);
+  const THREE = await import('./vendor/three/three-site.min.js?v=' + V);
   const model = await import('./scenes/' + name + '.js?v=' + V);
 
   const canvas = document.createElement('canvas');
@@ -197,7 +198,8 @@ async function mount(fig, reduced) {
       blur = CAM.focus.blur * (1 - ease.expo(span(t, 0, CAM.focus.until)));
     }
     angle += yaw;
-    const tg = shot.target;
+    // A model may move the look-at point with t (a pan that follows it).
+    const tg = built.target ? built.target(t) : shot.target;
     camera.position.set(tg[0] + Math.sin(angle) * radius, tg[1] + height, tg[2] + Math.cos(angle) * radius);
     camera.lookAt(tg[0], tg[1], tg[2]);
     return blur;

@@ -180,8 +180,14 @@ the page stops.
 
 - `scene3d.js` is the runtime and its header is the contract. A model is a
   module in `scenes/` exporting `build(THREE, kit)`.
-- three.js is vendored in `vendor/three/` (MIT, licence beside it) and only
-  downloaded when the figure comes within a screen of view.
+- three.js 0.170 is vendored in `vendor/three/` (MIT, licence beside it)
+  and only downloaded when the figure comes within a screen of view. It is
+  a cut-down build holding only the classes in `vendor/three/entry.js`
+  (514 KB against 692 KB for the full file). Using a class that is not in
+  the entry means rebuilding it once: `npm i three@0.170.0 esbuild` in a
+  scratch folder, then `npx esbuild entry.js --bundle --format=esm --minify
+  --legal-comments=inline --outfile=three-site.min.js`. That is the only
+  build step anywhere, and it runs once by hand, not on deploy.
 - The caption is the content; the canvas is `aria-hidden`. The stage holds
   its space when JS is on (the `js` class from the head script), and with
   JS off or no WebGL only the caption shows.
