@@ -5,7 +5,9 @@ experience, projects and a photography gallery. No build step, no
 framework. Plain HTML with one shared `styles.css` and five small scripts:
 `nav.js`, `motion.js`, `contact.js`, and `gallery.js` and `desk.js`
 (photography only), plus a one-line inline `pagereveal` script in each
-page's head (see Motion).
+page's head (see Motion). Experience and Services also load the 3D scenes:
+`vendor/zdog.min.js`, `scenes.js` and one `scene-*.js` per model (see
+Scenes).
 
 ## Layout
 
@@ -159,6 +161,44 @@ spring would show the wrong face.
 5. Cover it in the reduced-motion block, including any pseudo-element.
 6. Never take or drop focus.
 7. Keep it paper: no blur, glow, glass or pointer-following light.
+
+## Scenes
+
+Three small flat 3D models move with scroll, each built from what the page
+already says, so nothing in them is invented:
+
+- Services: a map of five miles round Richmond station (`scene-map.js`).
+  Place coordinates come from OpenStreetMap, distances are straight-line
+  haversine, and the legend under it lists the same 20 places. A reach ring
+  widens with scroll and each place's pin stands up as the ring passes it.
+  The river is the Thames from Hampton Court Bridge to Putney Bridge, from
+  bridge and lock positions with points between them estimated.
+- Experience, Homelab: the 2016 MacBook Pro with Proxmox VE, its guests and
+  the services and n8n above it, pulled apart as you scroll
+  (`scene-homelab.js`).
+- Experience, Cox: a coxed eight that rows only while the page scrolls,
+  blades square on the drive and feathered on the recovery, with the cox
+  marked in terracotta (`scene-eight.js`).
+
+`scenes.js` is the runtime: it adds a canvas to each
+`figure.scene[data-scene]`, measures scroll, and calls the model's `update`.
+Its header comment is the contract. The models are drawn with Zdog 1.1.3
+(MIT, licence in `vendor/`), chosen because it draws flat, unlit shapes
+that suit the paper; it is vendored rather than loaded from a CDN for the
+same reason as the fonts.
+
+Rules for scenes: the caption (and any legend) carries the content and shows
+with JS off; the canvas is `aria-hidden`. Motion comes only from scroll and
+drag, never a timer, so a scene is still when the page is. A sideways drag
+turns a model and it springs back; vertical swipes still scroll. Reduced
+motion draws the finished state. Only scenes near the screen are redrawn.
+
+Two traps found in testing, both handled in `scenes.js`: it must start on
+`DOMContentLoaded`, because deferred scripts run while `readyState` is
+already `interactive` and the `scene-*.js` files have not defined their
+models yet; and it measures layout position (`offsetTop`), not
+`getBoundingClientRect`, because the card holding a scene may still be
+landing, and a reading taken mid-landing sticks once scrolling stops.
 
 ## The photo desk
 

@@ -17,7 +17,7 @@
 <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="canonical" href="https://dbrown-io.github.io/experience.html">
-<link rel="stylesheet" href="styles.css?v=31">
+<link rel="stylesheet" href="styles.css?v=33">
 <script>addEventListener('pagereveal',function(e){if(e.viewTransition)document.documentElement.classList.add('vt-in')});</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -89,6 +89,10 @@
     <h2 class="record-title">Homelab</h2>
     <p class="record-meta">Ongoing · Proxmox, networking, n8n</p>
     <p class="record-body">A 2016 MacBook Pro running Proxmox VE, turned into a small stack of self-hosted services, a proper home network, and n8n automations that do things I used to do by hand. It started because I was paying for cloud services I could run myself. The build notes, hardware list and CAD files are in the <a class="strip-inline-link" href="https://github.com/dbrown-io/homelab" target="_blank" rel="noopener">repo</a>, which is the honest version: what works, and what I had to redo.</p>
+    <figure class="scene" id="stack" data-scene="homelab" style="--ratio: 16 / 10;">
+      <div class="scene-stage" aria-hidden="true"></div>
+      <figcaption class="scene-caption">The stack, bottom to top: the 2016 MacBook Pro, Proxmox VE installed on it, the virtual machines and containers Proxmox runs, and the self-hosted services and n8n automations inside them. Scroll to pull the layers apart; drag sideways to turn it.</figcaption>
+    </figure>
   </article>
 
   <div class="section-label">SCHOOL</div>
@@ -108,6 +112,10 @@
     <p class="record-meta">Youth club rowing</p>
     <p class="record-body">Early starts, long sessions, and a lot of the week built around it. This season: two A four crews and a B eight on the podium, and a C eight that didn&rsquo;t lose.</p>
     <img class="record-photo" src="images/rowing.webp" width="590" height="1042" loading="lazy" alt="David in the boat at a regatta, in club white and yellow">
+    <figure class="scene" id="eight" data-scene="eight" style="--ratio: 21 / 9;">
+      <div class="scene-stage" aria-hidden="true"></div>
+      <figcaption class="scene-caption">A coxed eight: eight rowers on sweep oars, one oar each on alternating sides, and the cox in the stern steering and calling the stroke. It rows as you scroll: blades square and buried on the drive, feathered flat on the way back.</figcaption>
+    </figure>
     <p class="record-caption">Photo: <a class="strip-inline-link" href="https://www.allmark.one" target="_blank" rel="noopener">allmark.one</a></p>
   </article>
 
@@ -133,7 +141,11 @@
 </div>
 
 <script src="nav.js?v=4" defer></script>
-<script src="motion.js?v=4" defer></script>
+<script src="motion.js?v=5" defer></script>
 <script src="contact.js?v=9" defer></script>
+<script src="vendor/zdog.min.js?v=1" defer></script>
+<script src="scenes.js?v=5" defer></script>
+<script src="scene-homelab.js?v=1" defer></script>
+<script src="scene-eight.js?v=1" defer></script>
 </body>
 </html>
