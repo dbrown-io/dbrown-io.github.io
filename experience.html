@@ -17,8 +17,8 @@
 <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="canonical" href="https://dbrown-io.github.io/experience.html">
-<link rel="stylesheet" href="styles.css?v=31">
-<script>addEventListener('pagereveal',function(e){if(e.viewTransition)document.documentElement.classList.add('vt-in')});</script>
+<link rel="stylesheet" href="styles.css?v=32">
+<script>document.documentElement.classList.add('js');addEventListener('pagereveal',function(e){if(e.viewTransition)document.documentElement.classList.add('vt-in')});</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
@@ -89,6 +89,10 @@
     <h2 class="record-title">Homelab</h2>
     <p class="record-meta">Ongoing · Proxmox, networking, n8n</p>
     <p class="record-body">A 2016 MacBook Pro running Proxmox VE, turned into a small stack of self-hosted services, a proper home network, and n8n automations that do things I used to do by hand. It started because I was paying for cloud services I could run myself. The build notes, hardware list and CAD files are in the <a class="strip-inline-link" href="https://github.com/dbrown-io/homelab" target="_blank" rel="noopener">repo</a>, which is the honest version: what works, and what I had to redo.</p>
+    <figure class="scene3d" id="stack" data-model="homelab">
+      <div class="scene3d-stage" aria-hidden="true"></div>
+      <figcaption class="scene-caption">The stack, bottom to top: the 2016 MacBook Pro, Proxmox VE installed on it, the virtual machines and containers Proxmox runs, and the self-hosted services and n8n automations inside them. Scroll and the lid opens, then the layers lift apart; drag sideways to look round it.</figcaption>
+    </figure>
   </article>
 
   <div class="section-label">SCHOOL</div>
@@ -135,5 +139,6 @@
 <script src="nav.js?v=4" defer></script>
 <script src="motion.js?v=4" defer></script>
 <script src="contact.js?v=9" defer></script>
+<script type="module" src="scene3d.js?v=1"></script>
 </body>
 </html>

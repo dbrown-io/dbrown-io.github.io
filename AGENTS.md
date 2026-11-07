@@ -4,8 +4,10 @@ Static personal site for David Brown: local services near Richmond, plus
 experience, projects and a photography gallery. No build step, no
 framework. Plain HTML with one shared `styles.css` and five small scripts:
 `nav.js`, `motion.js`, `contact.js`, and `gallery.js` and `desk.js`
-(photography only), plus a one-line inline `pagereveal` script in each
-page's head (see Motion).
+(photography only), plus a one-line inline script in each page's head
+(see Motion). Experience also loads `scene3d.js` as a module, which
+fetches three.js and `scenes/homelab.js` only when the model is near (see
+3D models).
 
 ## Layout
 
@@ -159,6 +161,35 @@ spring would show the wrong face.
 5. Cover it in the reduced-motion block, including any pseudo-element.
 6. Never take or drop focus.
 7. Keep it paper: no blur, glow, glass or pointer-following light.
+
+## 3D models
+
+One real 3D model, on Experience in the Homelab record: the 2016 MacBook
+Pro, whose lid opens as you scroll, then Proxmox VE, its virtual machines
+and containers, and the services and n8n lift apart above it. A five-mile
+map and a rowing eight were tried and dropped as bloat: add a model only
+where it explains something the words cannot.
+
+The ideas come from David's Byte Size video engine (`video-prod`), not its
+code: every surface takes a palette role (`kit.mat`), models are low-poly
+and flat-shaded under key, rim and fill lights, a soft disc stands in for a
+shadow, and the camera arrives wide and high, makes one eased swing, racks
+into focus and pushes in. In a video that runs on the frame number; here it
+runs on scroll progress, so it plays backwards scrolling up and stops when
+the page stops.
+
+- `scene3d.js` is the runtime and its header is the contract. A model is a
+  module in `scenes/` exporting `build(THREE, kit)`.
+- three.js is vendored in `vendor/three/` (MIT, licence beside it) and only
+  downloaded when the figure comes within a screen of view.
+- The caption is the content; the canvas is `aria-hidden`. The stage holds
+  its space when JS is on (the `js` class from the head script), and with
+  JS off or no WebGL only the caption shows.
+- Reduced motion renders the finished state. A sideways drag turns the
+  model and it springs back; vertical swipes still scroll.
+- Progress is measured from layout position (`offsetTop`), not
+  `getBoundingClientRect`, because the record holding the model may still
+  be landing when it is read.
 
 ## The photo desk
 
