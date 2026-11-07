@@ -20,6 +20,8 @@
     Array.prototype.forEach.call(picker.options, function (opt) {
       if (opt.getAttribute('data-job') === wanted) picker.value = opt.value;
     });
+    // Show that the job was filled in for them (styles.css, .is-picked).
+    if (picker.value) picker.closest('.field').classList.add('is-picked');
   }
 
   // The Instagram link is printed directly under the form, so a failure

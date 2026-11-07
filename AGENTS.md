@@ -4,7 +4,8 @@ Static personal site for David Brown: local services near Richmond, plus
 experience, projects and a photography gallery. No build step, no
 framework. Plain HTML with one shared `styles.css` and five small scripts:
 `nav.js`, `motion.js`, `contact.js`, and `gallery.js` and `desk.js`
-(photography only).
+(photography only), plus a one-line inline `pagereveal` script in each
+page's head (see Motion).
 
 ## Layout
 
@@ -91,6 +92,21 @@ Some motion answers something the visitor just did:
 - Each new booking form message (sending, sent, failed) arrives rather than
   swapping in place. Disabling the focused submit button drops focus to the
   page, so `contact.js` hands it back afterwards.
+
+- Moving between pages is a cross-document view transition. The signature,
+  profile photo and nav are named, so they stay put while the page under
+  them fades out and the new one rises in. Each page's head carries a
+  one-line inline script that adds `.vt-in` on those arrivals, which stops
+  the header playing its entrance again. It has to be inline in the head:
+  `pagereveal` fires before the deferred scripts run. Keep it on any new
+  page, and keep the three names unique.
+- A ticket's "Quote first" badge is stamped on after its tape (`stamp`).
+- The route cards' arrows lean the way they go on hover.
+- Pointing at the header photo lifts its tape, the hint that it comes away.
+- Arriving from a ticket, the preselected job picker ripples twice, so the
+  visitor sees it was filled in for them.
+- The photo viewer's scrim fades up and the photo rises into it; next and
+  previous slide in from the side they come from.
 
 ### Curves
 

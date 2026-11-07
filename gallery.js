@@ -29,8 +29,10 @@
   var status = box.querySelector('.lightbox-status');
   var closeBtn = box.querySelector('.lightbox-close');
 
-  function show(i) {
+  // dir is -1, 0 or 1: which side the new photo slides in from.
+  function show(i, dir) {
     index = (i + photos.length) % photos.length;
+    img.style.setProperty('--from-x', (dir || 0) * 28 + 'px');
     var link = photos[index];
     var thumb = link.querySelector('img');
     var text = thumb ? thumb.getAttribute('alt') : '';
@@ -43,6 +45,9 @@
 
   img.addEventListener('load', function () {
     box.classList.remove('is-loading');
+    img.classList.remove('is-in');
+    void img.offsetWidth;
+    img.classList.add('is-in');
     status.textContent = '';
   });
 
@@ -79,15 +84,15 @@
   });
 
   closeBtn.addEventListener('click', close);
-  box.querySelector('.lightbox-prev').addEventListener('click', function () { show(index - 1); });
-  box.querySelector('.lightbox-next').addEventListener('click', function () { show(index + 1); });
+  box.querySelector('.lightbox-prev').addEventListener('click', function () { show(index - 1, -1); });
+  box.querySelector('.lightbox-next').addEventListener('click', function () { show(index + 1, 1); });
   box.addEventListener('click', function (e) { if (e.target === box) close(); });
 
   document.addEventListener('keydown', function (e) {
     if (box.hidden) return;
     if (e.key === 'Escape') close();
-    else if (e.key === 'ArrowLeft') show(index - 1);
-    else if (e.key === 'ArrowRight') show(index + 1);
+    else if (e.key === 'ArrowLeft') show(index - 1, -1);
+    else if (e.key === 'ArrowRight') show(index + 1, 1);
     else if (e.key === 'Tab') {
       // Keep Tab inside the dialog; without this, focus walks the page behind it.
       var stops = Array.prototype.slice.call(box.querySelectorAll('button'));
