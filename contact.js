@@ -37,6 +37,9 @@
   function say(text, kind) {
     status.textContent = text;
     status.className = 'form-status is-' + kind;
+    // Restart the arrival each time, so a new message reads as a change.
+    void status.offsetWidth;
+    status.classList.add('is-new');
     // On a phone the result lands below the button, under the fold.
     status.scrollIntoView({ block: 'nearest' });
   }
@@ -49,6 +52,9 @@
       return;
     }
 
+    // Disabling the focused button drops focus to the page, so a keyboard
+    // user would be sent back to the top. Hand it back once it is enabled.
+    var hadFocus = document.activeElement === submit;
     submit.disabled = true;
     say('Sending.', 'busy');
 
@@ -79,6 +85,9 @@
       say(detail('never reached formspree: ' + err), 'error');
     }).then(function () {
       submit.disabled = false;
+      if (hadFocus && (!document.activeElement || document.activeElement === document.body)) {
+        submit.focus({ preventScroll: true });
+      }
     });
   });
 })();
