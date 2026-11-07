@@ -320,6 +320,7 @@
 
   function flip(c) {
     var on = c.el.classList.toggle('is-flipped');
+    c.el.classList.add('has-turned');
     c.back.setAttribute('aria-hidden', String(!on));
     c.key.setAttribute('aria-pressed', String(on));
   }

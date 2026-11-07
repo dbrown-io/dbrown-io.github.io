@@ -108,6 +108,25 @@ Some motion answers something the visitor just did:
 - The photo viewer's scrim fades up and the photo rises into it; next and
   previous slide in from the side they come from.
 
+Second pass, from a motion audit:
+
+- `land` has air in it: each card starts a little to one side (`--drift`,
+  set beside `--tilt`, against it) and a little nearer, and slides back
+  under itself as it drops.
+- The signature is written, not faded: a clip runs across it like a pen.
+  Its fill is `backwards` so no clip is left on it afterwards.
+- Each ticket's icon acts out its job once on hover or keyboard focus,
+  matched by the ticket link's `job=` key, so a new ticket needs its own
+  line there or its icon stays still.
+- Turning a print lifts it off the desk (`turn-over`/`turn-back`), only
+  after `desk.js` marks it `.has-turned`, so nothing lifts on load.
+- Hover lifts sit behind `@media (hover: hover)`: a touch screen keeps
+  `:hover` on the last thing tapped, which left cards lifted. Touch gets a
+  press instead (`:active`, which iOS only applies because `motion.js`
+  listens for `touchstart`). Keyboard focus lifts everywhere.
+- Print shows everything finished: no animation, `.land-wait` cards
+  visible, every `--p` forced to 1.
+
 ### Curves
 
 Three tokens on `:root`, and nothing else:

@@ -464,17 +464,20 @@
      above, tilted, then settling flat with a small bounce. --tilt is the angle
      each one comes in at; neighbours alternate so a row never lands in step.
      motion.js holds back the cards below the fold until they are scrolled to. */
+  /* It falls through air, so it drifts: each card starts a little to one
+     side (--drift, against its tilt) and a little nearer (scale), slides
+     back under itself as it drops, and settles. */
   @keyframes land {
-    0% { opacity: 0; transform: translateY(-22px) rotate(var(--tilt)) scale(1.03); }
-    55% { opacity: 1; transform: translateY(3px) rotate(calc(var(--tilt) * -0.25)) scale(1); }
-    80% { transform: translateY(-1px) rotate(calc(var(--tilt) * 0.08)); }
+    0% { opacity: 0; transform: translate(var(--drift, 0px), -26px) rotate(var(--tilt)) scale(1.05); }
+    45% { opacity: 1; transform: translate(calc(var(--drift, 0px) * -0.15), 3px) rotate(calc(var(--tilt) * -0.25)) scale(1); }
+    75% { transform: translate(0, -1px) rotate(calc(var(--tilt) * 0.08)); }
     100% { opacity: 1; transform: none; }
   }
 
-  .ticket, .route, .record, .project, .contact, .facts { --tilt: -1.6deg; --lean: -0.5deg; }
-  .ticket:nth-child(even), .route:nth-child(even), .project:nth-child(even), .record:nth-of-type(even) { --tilt: 1.4deg; --lean: 0.5deg; }
-  .ticket:nth-child(3n) { --tilt: -0.8deg; }
-  .contact, .facts { --tilt: -0.6deg; }
+  .ticket, .route, .record, .project, .contact, .facts { --tilt: -1.6deg; --lean: -0.5deg; --drift: 12px; }
+  .ticket:nth-child(even), .route:nth-child(even), .project:nth-child(even), .record:nth-of-type(even) { --tilt: 1.4deg; --lean: 0.5deg; --drift: -11px; }
+  .ticket:nth-child(3n) { --tilt: -0.8deg; --drift: 7px; }
+  .contact, .facts { --tilt: -0.6deg; --drift: 4px; }
 
   /* Held back by motion.js until scrolled into view. */
   .land-wait { animation: none !important; opacity: 0; }
@@ -482,14 +485,27 @@
   /* Hover lifts a card off the desk and the tape starts to peel. Done with the
      translate and rotate properties so it adds to the landing transform rather
      than fighting it. */
-  .ticket:hover, .ticket:focus-within {
+  /* A touch screen keeps :hover on whatever was last tapped, which left a
+     tapped card lifted and leaning. Pointer hover lifts; keyboard focus
+     lifts everywhere. */
+  .ticket:focus-within {
     translate: 0 -3px;
     rotate: var(--lean);
     box-shadow: 0 6px 0 var(--line), 0 18px 30px -16px rgba(43,42,38,0.45);
   }
+  @media (hover: hover) {
+    .ticket:hover {
+      translate: 0 -3px;
+      rotate: var(--lean);
+      box-shadow: 0 6px 0 var(--line), 0 18px 30px -16px rgba(43,42,38,0.45);
+    }
+  }
   .tape { transition: translate 0.4s var(--e-spring), rotate 0.4s var(--e-spring); }
-  .ticket:hover .tape, .ticket:focus-within .tape,
-  .project:hover .tape { translate: 0 -2px; rotate: -4deg; }
+  .ticket:focus-within .tape { translate: 0 -2px; rotate: -4deg; }
+  @media (hover: hover) {
+    .ticket:hover .tape,
+    .project:hover .tape { translate: 0 -2px; rotate: -4deg; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
@@ -702,10 +718,12 @@
     transition: translate 0.4s var(--e-spring), rotate 0.4s var(--e-spring), box-shadow 0.25s var(--e-out);
   }
 
-  .project:hover {
-    translate: 0 -3px;
-    rotate: var(--lean);
-    box-shadow: 0 6px 0 var(--line), 0 18px 32px -16px rgba(43,42,38,0.45);
+  @media (hover: hover) {
+    .project:hover {
+      translate: 0 -3px;
+      rotate: var(--lean);
+      box-shadow: 0 6px 0 var(--line), 0 18px 32px -16px rgba(43,42,38,0.45);
+    }
   }
 
   .project::before {
@@ -1002,10 +1020,17 @@
   }
   .route:nth-child(2) { --land-delay: 0.2s; }
 
-  .route:hover {
+  .route:focus-visible {
     translate: 0 -3px;
     rotate: var(--lean);
     box-shadow: 0 5px 0 var(--line), 0 16px 28px -16px rgba(43,42,38,0.45);
+  }
+  @media (hover: hover) {
+    .route:hover {
+      translate: 0 -3px;
+      rotate: var(--lean);
+      box-shadow: 0 5px 0 var(--line), 0 16px 28px -16px rgba(43,42,38,0.45);
+    }
   }
 
   .route-kicker {
@@ -1743,8 +1768,8 @@
 
   /* A route card's arrow leans the way it goes when the card is pointed at. */
   .go-arrow { display: inline-block; transition: translate 0.4s var(--e-spring); }
-  .route:hover .go-arrow,
   .route:focus-visible .go-arrow { translate: 4px 0; }
+  @media (hover: hover) { .route:hover .go-arrow { translate: 4px 0; } }
 
   /* The header photo can be grabbed; pointing at it lifts the tape the way a
      card's does, which is the hint that it comes away. */
@@ -1769,3 +1794,78 @@
   @keyframes viewer-in { from { opacity: 0; scale: 0.96; translate: 0 10px; } }
   .lightbox-stage img.is-in { animation: photo-in 0.4s var(--e-spring); }
   @keyframes photo-in { from { opacity: 0; translate: var(--from-x, 0px) 0; } }
+
+  /* A tap on a phone has no hover to answer it, so a card gives under the
+     finger instead: pressed in, then back with a small pop. */
+  @media (hover: none) {
+    .ticket, .route, .project { transition: scale 0.4s var(--e-bounce); }
+    .ticket:active, .route:active, .project:active { scale: 0.985; transition-duration: 0.08s; }
+  }
+
+  /* The signature is written rather than faded in: a clip runs across it
+     the way a pen would. */
+  @keyframes write {
+    from { clip-path: inset(-30% 100% -30% -10%); }
+    to { clip-path: inset(-30% -10% -30% -10%); }
+  }
+  .signature { animation: write 0.9s var(--e-out) 0.1s backwards; }
+
+  /* Each ticket's icon acts out its job once when the ticket is pointed at
+     or focused: the wash arrows turn, the sprout grows, the cap is tossed,
+     the paw pats, the print builds up in layers, the screen switches on and
+     the lens snaps open. */
+  .icon svg, .icon svg * { transform-box: fill-box; transform-origin: center; }
+  @keyframes icon-turn { from { rotate: -180deg; } }
+  @keyframes icon-grow { from { scale: 1 0.35; } }
+  @keyframes icon-toss {
+    40% { translate: 0 -5px; rotate: -14deg; }
+  }
+  @keyframes icon-pat {
+    30% { translate: -1px -3px; rotate: -12deg; }
+    60% { translate: 0 0; rotate: 0deg; }
+    75% { translate: 0 -1px; }
+  }
+  @keyframes icon-pop { from { scale: 0; opacity: 0; } }
+  @keyframes icon-boot { from { scale: 1 0.08; opacity: 0.4; } }
+  /* The sprout grows from the ground, not from its middle. */
+  .ticket:has([href*="job=garden#"]) .icon svg { transform-origin: 50% 90%; }
+  @media (hover: hover) {
+    .ticket:hover:has([href*="job=wash#"]) .icon svg { animation: icon-turn 0.6s var(--e-spring); }
+    .ticket:hover:has([href*="job=garden#"]) .icon svg { animation: icon-grow 0.5s var(--e-bounce); }
+    .ticket:hover:has([href*="job=tutoring#"]) .icon svg { animation: icon-toss 0.5s var(--e-out); }
+    .ticket:hover:has([href*="job=dog#"]) .icon svg { animation: icon-pat 0.5s var(--e-out); }
+    .ticket:hover:has([href*="job=printing#"]) .icon svg > * { animation: icon-pop 0.35s var(--e-bounce) backwards; }
+    .ticket:hover:has([href*="job=pc#"]) .icon svg > rect { animation: icon-boot 0.35s var(--e-spring); }
+    .ticket:hover:has([href*="job=photography#"]) .icon svg > circle { animation: icon-pop 0.4s var(--e-bounce); }
+  }
+  .ticket:has([href*="job=wash#"]:focus-visible) .icon svg { animation: icon-turn 0.6s var(--e-spring); }
+  .ticket:has([href*="job=garden#"]:focus-visible) .icon svg { animation: icon-grow 0.5s var(--e-bounce); }
+  .ticket:has([href*="job=tutoring#"]:focus-visible) .icon svg { animation: icon-toss 0.5s var(--e-out); }
+  .ticket:has([href*="job=dog#"]:focus-visible) .icon svg { animation: icon-pat 0.5s var(--e-out); }
+  .ticket:has([href*="job=printing#"]:focus-visible) .icon svg > * { animation: icon-pop 0.35s var(--e-bounce) backwards; }
+  .ticket:has([href*="job=pc#"]:focus-visible) .icon svg > rect { animation: icon-boot 0.35s var(--e-spring); }
+  .ticket:has([href*="job=photography#"]:focus-visible) .icon svg > circle { animation: icon-pop 0.4s var(--e-bounce); }
+  .ticket .icon svg > :nth-child(2) { animation-delay: 0.07s; }
+  .ticket .icon svg > :nth-child(3) { animation-delay: 0.14s; }
+  .ticket .icon svg > :nth-child(4) { animation-delay: 0.21s; }
+
+  /* Turning a print over lifts it off the desk: it rises and its shadow
+     spreads at the halfway point, then it is set back down. desk.js adds
+     .has-turned on the first turn, so the prints do not all lift on load.
+     Two names, so the lift replays whichever way it turns. */
+  @keyframes turn-over { 50% { scale: 1.1; } }
+  @keyframes turn-back { 50% { scale: 1.1; } }
+  @keyframes turn-shadow { 50% { box-shadow: 0 2px 2px rgba(43,42,38,0.1), 0 26px 36px -14px rgba(43,42,38,0.5); } }
+  .print.has-turned.is-flipped .print-inner { animation: turn-over 0.6s var(--e-out); }
+  .print.has-turned:not(.is-flipped) .print-inner { animation: turn-back 0.6s var(--e-out); }
+  .print.has-turned .print-face { animation: turn-shadow 0.6s var(--e-out); }
+
+  /* Paper does not move on paper. Cards still waiting to land would print
+     blank, and scroll-linked parts would print half drawn, so print shows
+     everything finished. */
+  @media print {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .land-wait { opacity: 1; }
+    .section-label, .home-intro, .timeline, .record-photos { --p: 1 !important; }
+    .timeline .section-label.is-pending::before { background: var(--terra-text); border-color: var(--terra-text); scale: 1; }
+  }
