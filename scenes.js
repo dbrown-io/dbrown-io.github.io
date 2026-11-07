@@ -154,6 +154,9 @@
     request();
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-  else start();
+  // Deferred scripts run while readyState is already 'interactive', before
+  // the scene-*.js files after this one have defined their models, so wait
+  // for DOMContentLoaded, which fires once every deferred script has run.
+  if (document.readyState === 'complete') start();
+  else document.addEventListener('DOMContentLoaded', start);
 })();
