@@ -1706,3 +1706,66 @@
   @media (max-width: 480px) {
     .timeline { --thread-x: -10px; }
   }
+
+  /* Moving between pages. The header is the same on every page, so it stays
+     where it is (signature, photo and nav each keep their place, and the nav
+     slides if the new title is a different height) while the page below it
+     swaps: the old one fades, the new one rises in. The cards on the new page
+     still land through it. A small script in each page's head adds .vt-in on
+     these arrivals, so the header does not play its own entrance a second
+     time. Browsers without cross-document view transitions load the page
+     as before. */
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition { navigation: auto; }
+  }
+  .signature { view-transition-name: signature; }
+  .profile-wrap { view-transition-name: profile; }
+  nav.tabs { view-transition-name: tabs; }
+  ::view-transition-group(*) { animation-duration: 0.35s; animation-timing-function: var(--e-out); }
+  ::view-transition-old(root) { animation: page-out 0.16s var(--e-out) both; }
+  ::view-transition-new(root) { animation: page-in 0.34s var(--e-out) 0.06s both; }
+  @keyframes page-out { to { opacity: 0; } }
+  @keyframes page-in { from { opacity: 0; translate: 0 8px; } }
+  .vt-in :is(.signature, h1, .tagline, .profile-wrap, .profile-tape, nav.tabs) { animation: none; }
+
+  /* Each ticket's price is stamped on once its tape is down: the badge is
+     the thing a customer looks for, so it gets the last beat of the landing. */
+  @keyframes stamp {
+    0%   { opacity: 0; scale: 1.45; rotate: -5deg; }
+    60%  { opacity: 1; scale: 0.95; rotate: 0deg; }
+    100% { opacity: 1; scale: 1; rotate: 0deg; }
+  }
+  .ticket .price {
+    animation: stamp 0.32s var(--e-out) backwards;
+    animation-delay: calc(var(--land-delay, 0s) + 0.62s);
+  }
+  .land-wait .price { animation: none; }
+
+  /* A route card's arrow leans the way it goes when the card is pointed at. */
+  .go-arrow { display: inline-block; transition: translate 0.4s var(--e-spring); }
+  .route:hover .go-arrow,
+  .route:focus-visible .go-arrow { translate: 4px 0; }
+
+  /* The header photo can be grabbed; pointing at it lifts the tape the way a
+     card's does, which is the hint that it comes away. */
+  .profile-tape { transition: translate 0.4s var(--e-spring), rotate 0.4s var(--e-spring); }
+  .profile-card.is-flickable:has(.profile-photo:hover) .profile-tape { translate: 0 -2px; rotate: -4deg; }
+
+  /* Arriving from a service ticket, the job is already chosen. One ring
+     ripples out from the picker so the visitor sees it was filled in for
+     them and can change it. Flat ring, no blur. */
+  @keyframes picked {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--terra-text) 55%, transparent); }
+    100% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--terra-text) 0%, transparent); }
+  }
+  .booking .is-picked select { animation: picked 0.9s var(--e-out) 0.6s 2 backwards; }
+
+  /* Photo viewer: the scrim fades up and the photo rises into it. Stepping
+     to the next or previous photo slides the new one in from that side
+     (gallery.js sets --from-x), so the direction of travel is visible. */
+  .lightbox { animation: scrim-in 0.2s var(--e-out); }
+  @keyframes scrim-in { from { opacity: 0; } }
+  .lightbox-stage { animation: viewer-in 0.45s var(--e-spring); }
+  @keyframes viewer-in { from { opacity: 0; scale: 0.96; translate: 0 10px; } }
+  .lightbox-stage img.is-in { animation: photo-in 0.4s var(--e-spring); }
+  @keyframes photo-in { from { opacity: 0; translate: var(--from-x, 0px) 0; } }
