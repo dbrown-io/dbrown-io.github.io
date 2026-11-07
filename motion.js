@@ -11,7 +11,7 @@
 
   /* ------------------------------------------------- cards land on scroll */
   var cards = Array.prototype.slice.call(
-    document.querySelectorAll('.ticket, .route, .record, .project, .contact, .facts')
+    document.querySelectorAll('.ticket, .route, .record, .project, .contact, .facts, .scene-card')
   );
   if (cards.length && window.IntersectionObserver) {
     // Only cards that start below the fold are held back: anything already on
