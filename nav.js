@@ -1,4 +1,4 @@
-// Animates the nav pill sliding to the clicked tab, then loads the page. Each
+// Animates the nav pill stretching across to the clicked tab, then loads the page. Each
 // page is a full reload, so the indicator snaps into place on load and only
 // animates in the moment before navigating away.
 (function () {
@@ -12,11 +12,17 @@
   indicator.className = 'tab-indicator';
   nav.insertBefore(indicator, nav.firstChild);
 
+  // The pill is clipped to the tab between two edges (styles.css). The edge
+  // on the side it is moving towards leads, so data-dir says which side.
+  var edge = 0;
   function placeIndicator(link, animate) {
     if (!link) return;
     if (!animate) indicator.style.transition = 'none';
-    indicator.style.width = link.offsetWidth + 'px';
-    indicator.style.left = link.offsetLeft + 'px';
+    var l = link.offsetLeft;
+    if (animate) nav.setAttribute('data-dir', l > edge ? 'right' : 'left');
+    edge = l;
+    indicator.style.setProperty('--tab-l', l + 'px');
+    indicator.style.setProperty('--tab-r', (l + link.offsetWidth) + 'px');
     if (!animate) {
       // force reflow so the next transition re-applies cleanly
       void indicator.offsetHeight;
@@ -49,7 +55,7 @@
       links.forEach(function (l) { l.classList.remove('active'); });
       link.classList.add('active');
       placeIndicator(link, true);
-      setTimeout(function () { window.location.href = href; }, 180);
+      setTimeout(function () { window.location.href = href; }, 200);
     });
   });
 

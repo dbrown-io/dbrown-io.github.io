@@ -78,6 +78,53 @@ state. That is what shows with JS off or reduced motion on:
 Reduced motion turns all of it off. Text keeps the quieter `fadeUp`: it is
 not paper.
 
+Some motion answers something the visitor just did:
+
+- The nav pill stretches to a clicked tab: the edge on the side it is heading
+  leads and the other follows, so it moves like a drop. It is one full-width
+  element clipped between `--tab-l` and `--tab-r` (registered with
+  `@property`), so it animates paint rather than `left`/`width`.
+- Buttons press in and pop back when let go.
+- A project on About unfolds (`::details-content` height) and its text
+  settles in behind it. `*` does not reach that pseudo-element, so the
+  reduced-motion block names it.
+- Each new booking form message (sending, sent, failed) arrives rather than
+  swapping in place. Disabling the focused submit button drops focus to the
+  page, so `contact.js` hands it back afterwards.
+
+### Curves
+
+Three tokens on `:root`, and nothing else:
+
+| Token | Feel | Use |
+|---|---|---|
+| `--e-spring` | settles with about 4% overshoot | hover lifts, tape peel, the nav pill, chevrons, status messages |
+| `--e-bounce` | about 16% overshoot | pops: a button let go, a timeline dot filling |
+| `--e-out` | no overshoot | fades, colour, folds, `land`, `tape-press`, `fadeUp` |
+
+The springs are damped-spring samples in `linear()`, with `cubic-bezier`
+stand-ins behind `@supports`. A spring needs about twice the time of an
+ease to settle (0.4s for a hover lift, not 0.2s). `land` and `tape-press`
+key their own bounce, so they run on `--e-out`.
+
+The one exception is the print flip in `desk.js`: its faces swap at the
+halfway mark, so the turn must cross zero at exactly half time, and a
+spring would show the wrong face.
+
+### Adding motion
+
+1. Say what it shows: an arrival, an action confirmed, or a change
+   explained. If it shows nothing, leave it out.
+2. Use one of the three curves.
+3. Animate `transform`, `translate`, `rotate`, `scale`, `opacity` or
+   `clip-path`. A height animation is only for a fold, where pushing what
+   is below is the point.
+4. The finished state must not depend on the animation: reduced motion and
+   JS off both show it.
+5. Cover it in the reduced-motion block, including any pseudo-element.
+6. Never take or drop focus.
+7. Keep it paper: no blur, glow, glass or pointer-following light.
+
 ## The photo desk
 
 `desk.js` turns the Photography grids into a pile of prints: throw them, tap

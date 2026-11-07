@@ -62,6 +62,24 @@
     --t-tutor: #f0b94c;
     --t-terra: #e8785c;
     --terra-text: #b3492f;
+
+    /* Motion curves. Every transition and animation on the site uses one of
+       these three; do not add a fourth. --e-spring settles with about 4%
+       overshoot (lifts, the tab pill, chevrons), --e-bounce with about 16%
+       (pops: a button let go, a timeline dot filling), --e-out has no
+       overshoot (fades, folds, the landing keyframes, which key their own
+       bounce). The springs are damped-spring samples in linear(); browsers
+       without linear() get the cubic-bezier stand-ins below. */
+    --e-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+    --e-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --e-out: cubic-bezier(0.2, 0.75, 0.25, 1);
+  }
+
+  @supports (transition-timing-function: linear(0, 1)) {
+    :root {
+      --e-spring: linear(0, 0.036, 0.126, 0.245, 0.375, 0.503, 0.622, 0.726, 0.814, 0.884, 0.939, 0.979, 1.007, 1.025, 1.035, 1.039, 1.04, 1.037, 1.033, 1.028, 1.023, 1.018, 1.013, 1.009, 1.006, 1.004, 1.002, 1, 0.999, 0.999, 1);
+      --e-bounce: linear(0, 0.073, 0.248, 0.466, 0.683, 0.869, 1.011, 1.102, 1.149, 1.16, 1.145, 1.115, 1.08, 1.046, 1.017, 0.996, 0.982, 0.976, 0.975, 0.977, 0.982, 0.988, 0.993, 0.998, 1.001, 1.003, 1.004, 1.004, 1.004, 1.003, 1);
+    }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -98,7 +116,7 @@
     flex-shrink: 0;
     order: 2;
     --tilt: 5deg;
-    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    animation: land 0.7s var(--e-out) both;
   }
 
   .profile-card {
@@ -149,7 +167,7 @@
     border-top: none;
     border-radius: 0 0 8px 8px;
     box-shadow: 0 8px 18px -10px rgba(43,42,38,0.4);
-    transition: opacity 0.15s ease;
+    transition: opacity 0.15s var(--e-out);
   }
 
   .profile-ig:hover { opacity: 0.85; }
@@ -176,8 +194,8 @@
        margins keep the header where it was. */
     padding-block: 6px;
     margin: -6px 0 -4px;
-    animation: fadeUp 0.5s ease both;
-    transition: opacity 0.15s ease;
+    animation: fadeUp 0.5s var(--e-out) both;
+    transition: opacity 0.15s var(--e-out);
   }
 
   a.signature:hover { opacity: 0.75; }
@@ -188,14 +206,14 @@
     font-size: 42px;
     letter-spacing: -0.01em;
     margin-bottom: 12px;
-    animation: fadeUp 0.5s ease 0.05s both;
+    animation: fadeUp 0.5s var(--e-out) 0.05s both;
   }
 
   .tagline {
     color: var(--ink-dim);
     font-size: 15.5px;
     max-width: 420px;
-    animation: fadeUp 0.5s ease 0.1s both;
+    animation: fadeUp 0.5s var(--e-out) 0.1s both;
   }
 
   .tagline strong { color: var(--ink); font-weight: 600; }
@@ -250,8 +268,8 @@
     border-radius: 4px;
     padding: 20px 20px 20px 24px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
-    transition: translate 0.2s ease, rotate 0.2s ease, box-shadow 0.2s ease;
+    animation: land 0.7s var(--e-out) both;
+    transition: translate 0.4s var(--e-spring), rotate 0.4s var(--e-spring), box-shadow 0.25s var(--e-out);
     display: flex;
     flex-direction: column;
   }
@@ -377,7 +395,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 16px;
-    animation: fadeUp 0.5s ease 0.3s both;
+    animation: fadeUp 0.5s var(--e-out) 0.3s both;
   }
 
   .loc {
@@ -399,10 +417,12 @@
     padding: 11px 18px;
     min-height: 44px;
     border-radius: 100px;
-    transition: transform 0.15s ease;
+    transition: translate 0.3s var(--e-spring), scale 0.4s var(--e-bounce);
   }
 
-  .btn:hover { transform: translateY(-1px); }
+  .btn:hover { translate: 0 -1px; }
+  /* Pressed in quickly, let go with a pop: the press is the event it confirms. */
+  .btn:active { scale: 0.96; transition-duration: 0.08s; }
   .btn svg { width: 15px; height: 15px; }
 
 
@@ -412,7 +432,7 @@
     gap: 16px;
     flex-wrap: wrap;
     margin-top: 22px;
-    animation: fadeUp 0.5s ease 0.15s both;
+    animation: fadeUp 0.5s var(--e-out) 0.15s both;
   }
 
   .home-cta + .section-label { margin-top: 44px; }
@@ -467,12 +487,14 @@
     rotate: var(--lean);
     box-shadow: 0 6px 0 var(--line), 0 18px 30px -16px rgba(43,42,38,0.45);
   }
-  .tape { transition: translate 0.2s ease, rotate 0.2s ease; }
+  .tape { transition: translate 0.4s var(--e-spring), rotate 0.4s var(--e-spring); }
   .ticket:hover .tape, .ticket:focus-within .tape,
   .project:hover .tape { translate: 0 -2px; rotate: -4deg; }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
+    /* * does not reach pseudo-elements, and this one animates a height. */
+    .project::details-content { transition: none !important; }
   }
 
   @media (max-width: 480px) {
@@ -493,7 +515,7 @@
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 100px;
-    animation: fadeUp 0.5s ease 0.15s both;
+    animation: fadeUp 0.5s var(--e-out) 0.15s both;
   }
 
   nav.tabs a {
@@ -510,7 +532,7 @@
     padding: 6px 13px;
     border-radius: 100px;
     border: 1px solid transparent;
-    transition: color 0.15s ease, background 0.15s ease;
+    transition: color 0.15s var(--e-out), background 0.15s var(--e-out);
   }
 
   nav.tabs a:hover { color: var(--ink); }
@@ -522,16 +544,31 @@
 
   nav.tabs a.active:hover { color: var(--paper); }
 
+  /* The pill spans the whole nav and is clipped down to the active tab, so
+     moving it animates paint, not layout. nav.js sets its two edges; the edge
+     on the side it is heading leads and the other follows a beat later, so it
+     stretches across like a drop rather than sliding stiffly. Without
+     @property the edges cannot animate and the pill simply jumps. */
+  @property --tab-l { syntax: '<length>'; inherits: false; initial-value: 0px; }
+  @property --tab-r { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
   .tab-indicator {
     position: absolute;
     top: 3px;
     bottom: 3px;
     left: 0;
-    width: 0;
+    right: 0;
     background: var(--ink);
-    border-radius: 100px;
     z-index: 0;
-    transition: left 0.32s cubic-bezier(.4,0,.2,1), width 0.32s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+    clip-path: inset(0 calc(100% - var(--tab-r)) 0 var(--tab-l) round 100px);
+    transition: --tab-l 0.32s var(--e-spring), --tab-r 0.32s var(--e-spring);
+  }
+  nav.tabs[data-dir="right"] .tab-indicator {
+    transition: --tab-r 0.26s var(--e-spring), --tab-l 0.34s var(--e-spring) 0.05s;
+  }
+  nav.tabs[data-dir="left"] .tab-indicator {
+    transition: --tab-l 0.26s var(--e-spring), --tab-r 0.34s var(--e-spring) 0.05s;
   }
 
   /* once JS is driving the indicator, let it own the pill so the two don't double up */
@@ -543,7 +580,7 @@
     line-height: 1.7;
     max-width: 56ch;
     margin-top: 0;
-    animation: fadeUp 0.5s ease 0.1s both;
+    animation: fadeUp 0.5s var(--e-out) 0.1s both;
   }
 
   /* motion.js wraps each word of an intro in .w and sets --p on the paragraph
@@ -572,7 +609,7 @@
     border-radius: 4px;
     padding: 20px 20px 20px 24px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: fadeUp 0.45s ease both;
+    animation: fadeUp 0.45s var(--e-out) both;
   }
 
 
@@ -628,7 +665,7 @@
     /* Vertical padding on an inline link grows the tap area without moving
        the line it sits in. */
     padding-block: 14px;
-    transition: text-decoration-color 0.15s ease;
+    transition: text-decoration-color 0.15s var(--e-out);
   }
 
   .strip-inline-link:hover { text-decoration-color: var(--ink); }
@@ -661,8 +698,8 @@
     border: 1px solid var(--line);
     border-radius: 4px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
-    transition: translate 0.2s ease, rotate 0.2s ease, box-shadow 0.2s ease;
+    animation: land 0.7s var(--e-out) both;
+    transition: translate 0.4s var(--e-spring), rotate 0.4s var(--e-spring), box-shadow 0.25s var(--e-out);
   }
 
   .project:hover {
@@ -724,10 +761,25 @@
     flex-shrink: 0;
     margin-top: 4px;
     color: var(--ink-faint);
-    transition: transform 0.2s ease;
+    transition: transform 0.4s var(--e-spring);
   }
 
   .project[open] .project-chevron { transform: rotate(180deg); }
+
+  /* Opening a project unfolds it rather than snapping: the height grows and
+     the text settles in just behind it. Browsers without ::details-content
+     open it at once, as before. */
+  .project { interpolate-size: allow-keywords; }
+  .project::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition: block-size 0.35s var(--e-out), content-visibility 0.35s allow-discrete;
+  }
+  .project[open]::details-content { block-size: auto; }
+  .project[open] .project-detail p { animation: fold-in 0.4s var(--e-out) 0.06s backwards; }
+  @keyframes fold-in {
+    from { opacity: 0; translate: 0 -6px; }
+  }
 
   .project-detail {
     padding: 0 20px 22px 118px;
@@ -782,7 +834,7 @@
     border-radius: 8px;
     outline: 1px solid var(--line);
     display: block;
-    transition: transform 0.15s ease;
+    transition: transform 0.4s var(--e-spring);
   }
 
   .photo-grid .photo:hover img,
@@ -827,7 +879,7 @@
     border-radius: 14px;
     padding: 24px 22px 20px;
     margin-top: 16px;
-    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    animation: land 0.7s var(--e-out) both;
   }
 
   .record-title {
@@ -944,9 +996,9 @@
     text-decoration: none;
     color: var(--ink);
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    animation: land 0.7s var(--e-out) both;
     --land-delay: 0.12s;
-    transition: translate 0.2s ease, rotate 0.2s ease, box-shadow 0.2s ease;
+    transition: translate 0.4s var(--e-spring), rotate 0.4s var(--e-spring), box-shadow 0.25s var(--e-out);
   }
   .route:nth-child(2) { --land-delay: 0.2s; }
 
@@ -995,7 +1047,7 @@
     border-radius: 10px;
     padding: 24px;
     box-shadow: 0 3px 0 var(--line), 0 10px 22px -14px rgba(43,42,38,0.35);
-    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    animation: land 0.7s var(--e-out) both;
   }
 
   .contact-title {
@@ -1031,10 +1083,11 @@
     padding: 11px 18px;
     min-height: 44px;
     border-radius: 100px;
-    transition: transform 0.15s ease;
+    transition: translate 0.3s var(--e-spring), scale 0.4s var(--e-bounce);
   }
 
-  .contact-btn:hover { transform: translateY(-1px); }
+  .contact-btn:hover { translate: 0 -1px; }
+  .contact-btn:active { scale: 0.96; transition-duration: 0.08s; }
   .contact-btn svg { width: 15px; height: 15px; }
 
   .contact-btn--ghost {
@@ -1210,7 +1263,7 @@
     border-radius: 12px;
     background: var(--line);
     overflow: hidden;
-    animation: land 0.7s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    animation: land 0.7s var(--e-out) both;
   }
 
   .facts > div {
@@ -1334,6 +1387,14 @@
   }
 
   .form-status.is-ok { border-left-color: var(--t-garden); color: var(--ink); }
+
+  /* contact.js adds is-new each time the message changes, so sending,
+     sent and failed each arrive as a change rather than the text swapping
+     in place. */
+  .form-status.is-new { animation: status-in 0.4s var(--e-spring) both; }
+  @keyframes status-in {
+    from { opacity: 0; translate: 0 -4px; }
+  }
   .form-status.is-warn,
   .form-status.is-error { border-left-color: var(--terra-text); color: var(--terra-text); }
 
@@ -1418,12 +1479,12 @@
     left: 0;
     bottom: 18px;
     z-index: 900;
-    transition: opacity 0.2s ease, visibility 0s linear 0s;
+    transition: opacity 0.2s var(--e-out), visibility 0s linear 0s;
   }
   [data-mode="index"] .desk-tools {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+    transition: opacity 0.2s var(--e-out), visibility 0s linear 0.2s;
   }
 
   .print {
@@ -1445,6 +1506,10 @@
 
   /* A flat flip (scaleX through zero) rather than a 3D one: no backface
      tricks to go wrong while a print is mid-throw. */
+  /* The one curve outside the three tokens: the faces swap at the halfway
+     mark (the 0.3s visibility delay on .print-face), so the turn has to be
+     symmetric and cross zero exactly at half time. A spring would show the
+     wrong face. */
   .print-inner {
     position: absolute;
     inset: 0;
@@ -1459,7 +1524,7 @@
     border: 1px solid var(--line);
     border-radius: 3px;
     box-shadow: 0 1px 1px rgba(43,42,38,0.1), 0 6px 16px -8px rgba(43,42,38,0.35);
-    transition: box-shadow 0.2s ease, visibility 0s linear 0.3s;
+    transition: box-shadow 0.2s var(--e-out), visibility 0s linear 0.3s;
   }
   .print.is-flipped .print-front,
   .print:not(.is-flipped) .print-back { visibility: hidden; }
@@ -1591,7 +1656,7 @@
     100% { opacity: 0.9; translate: 0 0; scale: 1; rotate: 0deg; box-shadow: 0 2px 4px rgba(0,0,0,0.12); }
   }
   .ticket .tape, .record .tape, .project .tape, .profile-tape {
-    animation: tape-press 0.45s cubic-bezier(0.3, 0.7, 0.4, 1) backwards;
+    animation: tape-press 0.45s var(--e-out) backwards;
     animation-delay: calc(var(--land-delay, 0s) + 0.42s);
   }
   .land-wait .tape { animation: none; }
@@ -1631,7 +1696,7 @@
     background: var(--terra-text);
     border: 2px solid var(--terra-text);
     z-index: 1;
-    transition: background 0.25s ease, border-color 0.25s ease, scale 0.25s ease;
+    transition: background 0.25s var(--e-out), border-color 0.25s var(--e-out), scale 0.45s var(--e-bounce);
   }
   .timeline .section-label.is-pending::before {
     background: var(--paper);
