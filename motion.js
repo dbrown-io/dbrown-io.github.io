@@ -5,6 +5,10 @@
 (function () {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+  // iOS Safari only applies :active (the card press in styles.css) once the
+  // page listens for touches at all.
+  document.addEventListener('touchstart', function () {}, { passive: true });
+
   /* ------------------------------------------------- cards land on scroll */
   var cards = Array.prototype.slice.call(
     document.querySelectorAll('.ticket, .route, .record, .project, .contact, .facts')
