@@ -193,6 +193,13 @@ drag, never a timer, so a scene is still when the page is. A sideways drag
 turns a model and it springs back; vertical swipes still scroll. Reduced
 motion draws the finished state. Only scenes near the screen are redrawn.
 
+Two traps found in testing, both handled in `scenes.js`: it must start on
+`DOMContentLoaded`, because deferred scripts run while `readyState` is
+already `interactive` and the `scene-*.js` files have not defined their
+models yet; and it measures layout position (`offsetTop`), not
+`getBoundingClientRect`, because the card holding a scene may still be
+landing, and a reading taken mid-landing sticks once scrolling stops.
+
 ## The photo desk
 
 `desk.js` turns the Photography grids into a pile of prints: throw them, tap

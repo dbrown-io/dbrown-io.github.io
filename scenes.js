@@ -7,8 +7,8 @@
 //
 // build(ctx) adds shapes to ctx.illo and returns { update: function (s) {} }.
 // s carries:
-//   p     0 to 1: 0 as the figure's top enters the bottom of the screen, 1 once
-//         its middle reaches 35% down. Scrolling up runs it backwards.
+//   p     0 to 1: 0 as the drawing's top enters the bottom of the screen, 1
+//         once its middle reaches 35% down. Scrolling up runs it backwards.
 //   run   the same distance, unclamped, in screen heights: for motion that
 //         keeps going while the visitor scrolls (a stroke cycle).
 //   yaw   radians of sideways turn from dragging the model; springs back.
@@ -28,6 +28,13 @@
       tPrint: v('--t-print'), tWash: v('--t-wash'), tGarden: v('--t-garden'),
       tPc: v('--t-pc'), tTutor: v('--t-tutor'), tTerra: v('--t-terra')
     };
+  }
+
+  function layoutRect(el) {
+    var top = 0, h = el.offsetHeight;
+    for (var n = el; n; n = n.offsetParent) top += n.offsetTop;
+    top -= window.scrollY;
+    return { top: top, height: h, bottom: top + h };
   }
 
   function start() {
@@ -99,7 +106,12 @@
           else again = true;
         }
         if (!sc.visible) return;
-        var r = sc.fig.getBoundingClientRect();
+        // Measured on the drawing, not the figure: a long legend under the map
+        // would otherwise finish the motion after the drawing had scrolled away.
+        // Layout position, not getBoundingClientRect: the card holding a scene
+        // may still be landing (a transform), and a reading taken mid-landing
+        // would stick once the page stops scrolling.
+        var r = layoutRect(sc.canvas);
         var run = (vh - r.top) / vh;
         var p = (vh - r.top) / (vh * 0.65 + r.height / 2);
         var s = reduced
@@ -108,6 +120,10 @@
         var key = s.p.toFixed(4) + '|' + s.run.toFixed(4) + '|' + s.yaw.toFixed(4) + '|' + sc.h;
         if (key === sc.last) return;
         sc.last = key;
+        // Look again next frame: motion.js can move the layout above a scene in
+        // the same frame (the KidsHustle screens spreading), after this read,
+        // so keep measuring until the position stops changing.
+        again = true;
         sc.ctx.h = sc.h;
         if (sc.model.update) sc.model.update(s);
         sc.illo.updateRenderGraph();
@@ -151,6 +167,10 @@
 
     window.addEventListener('scroll', request, { passive: true });
     window.addEventListener('resize', request);
+    // Content above a scene can change height with no scroll (a lazy image
+    // arriving), which moves the scene without telling it.
+    window.addEventListener('load', request);
+    if (window.ResizeObserver) new ResizeObserver(request).observe(document.body);
     request();
   }
 
