@@ -164,11 +164,21 @@ spring would show the wrong face.
 
 ## 3D models
 
-One real 3D model, on Experience in the Homelab record: the 2016 MacBook
-Pro, whose lid opens as you scroll, then Proxmox VE, its virtual machines
-and containers, and the services and n8n lift apart above it. A five-mile
-map and a rowing eight were tried and dropped as bloat: add a model only
-where it explains something the words cannot.
+Two real 3D models:
+
+- Experience, Homelab record: the 2016 MacBook Pro, whose lid opens as you
+  scroll, then Proxmox VE, its virtual machines and containers, and the
+  services and n8n lift apart above it (`scenes/homelab.js`).
+- Home, under "Some of what I do": the seven service tickets as paper cards
+  in a ring that revolves while its section is pinned (`scenes/services.js`,
+  `data-pin`). Callouts sit still at the sides with leader lines following
+  each card; they are the real links to book that job, so they work with a
+  keyboard and stay readable. Under reduced motion, with JS off or with no
+  WebGL, the pinned track collapses and the three plain tickets show
+  instead.
+
+A five-mile map and a rowing eight were tried and dropped as bloat: add a
+model only where it explains or leads somewhere the words alone do not.
 
 The ideas come from David's Byte Size video engine (`video-prod`), not its
 code: every surface takes a palette role (`kit.mat`), models are low-poly

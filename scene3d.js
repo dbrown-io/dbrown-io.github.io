@@ -18,7 +18,23 @@
 // target } for the camera (angle in degrees, 0 = front). update(t): pose the
 // model for t from 0 to 1. Optional target(t) returns the look-at point for
 // t, so the camera can follow the model. kit holds the shared helpers below.
-const V = '2';
+//
+// Optional extras a model may return:
+//   camera     overrides for CAM below (e.g. { swing: 0 }).
+//   anchors    [{ key, object }]: points to label. Each element in the figure
+//              with data-anchor="key" is a callout; the runtime draws a leader
+//              line from it to the object's place on screen every frame. The
+//              anchor nearest the camera is the front one, and only anchors
+//              near the front get a line. kit.data lists the callouts ({ key, title,
+//              accent, icon }) so the model can build one part per callout.
+//   highlight(key|null)  called when a callout is pointed at or focused.
+// kit.invalidate() asks for a redraw (after a texture loads, say).
+//
+// A figure with data-pin is a tall track whose stage sticks to the screen;
+// t then runs from 0 to 1 over the scroll through the track. Pinned figures
+// are not mounted under reduced motion, and the plain content they replace
+// stays (see styles.css).
+const V = '5';
 const DEG = Math.PI / 180;
 
 const clamp01 = (n) => Math.max(0, Math.min(1, n));
@@ -132,6 +148,9 @@ async function mount(fig, reduced) {
   const name = fig.getAttribute('data-model');
   const stage = fig.querySelector('.scene3d-stage');
   if (!name || !stage) return;
+  const pinned = fig.hasAttribute('data-pin');
+  if (pinned && reduced) return;
+  const callouts = Array.prototype.slice.call(fig.querySelectorAll('[data-anchor]'));
   const THREE = await import('./vendor/three/three-site.min.js?v=' + V);
   const model = await import('./scenes/' + name + '.js?v=' + V);
 
@@ -162,12 +181,104 @@ async function mount(fig, reduced) {
   scene.add(key, rim, fill);
 
   const kit = makeKit(THREE, palette());
+  kit.data = callouts.map(function (el) {
+    const svg = el.querySelector('svg');
+    return {
+      key: el.getAttribute('data-anchor'),
+      title: (el.querySelector('.callout-title') || el).textContent.trim(),
+      accent: getComputedStyle(el).getPropertyValue('--accent').trim(),
+      icon: svg ? svg.outerHTML : '',
+    };
+  });
+  kit.invalidate = function () { last = ''; request(); };
   const built = model.default(THREE, kit);
   scene.add(built.root);
   const shot = Object.assign({ radius: 10, height: 4, angle: 20, target: [0, 0.6, 0] }, built.shot || {});
+  const cam = Object.assign({}, CAM, built.camera || {});
   fig.classList.add('is-live');
 
   let yaw = 0, vyaw = 0, held = null, last = '', raf = 0, lastT = 0, visible = true;
+
+  // Leader lines: one SVG over the stage, one path and end dot per callout.
+  const NS = 'http://www.w3.org/2000/svg';
+  const lines = [];
+  if (callouts.length && built.anchors) {
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'scene3d-lines');
+    svg.setAttribute('aria-hidden', 'true');
+    stage.appendChild(svg);
+    callouts.forEach(function (el) {
+      const key = el.getAttribute('data-anchor');
+      const a = built.anchors.filter(function (x) { return x.key === key; })[0];
+      if (!a) return;
+      const path = document.createElementNS(NS, 'path');
+      const dot = document.createElementNS(NS, 'circle');
+      dot.setAttribute('r', '3.5');
+      svg.appendChild(path);
+      svg.appendChild(dot);
+      lines.push({ el: el, obj: a.object, path: path, dot: dot });
+      if (built.highlight) {
+        const on = function () { built.highlight(key); kit.invalidate(); };
+        const off = function () { built.highlight(null); kit.invalidate(); };
+        el.addEventListener('mouseenter', on);
+        el.addEventListener('focus', on);
+        el.addEventListener('mouseleave', off);
+        el.addEventListener('blur', off);
+      }
+    });
+  }
+  const v3 = new THREE.Vector3();
+  function drawLines() {
+    if (!lines.length) return;
+    const sr = stage.getBoundingClientRect();
+    const w = sr.width, h = sr.height;
+    let best = null;
+    // How near each anchor is to the camera decides which card is in front:
+    // measured from the actual camera, so a swing or drag cannot mislead it.
+    let zn = Infinity, zf = -Infinity;
+    lines.forEach(function (L) {
+      L.obj.getWorldPosition(v3);
+      L.dist = v3.distanceTo(camera.position);
+      zn = Math.min(zn, L.dist);
+      zf = Math.max(zf, L.dist);
+    });
+    lines.forEach(function (L) {
+      L.obj.getWorldPosition(v3);
+      v3.project(camera);
+      const ax = (v3.x + 1) / 2 * w, ay = (1 - v3.y) / 2 * h;
+      const r = L.el.getBoundingClientRect();
+      const left = r.left + r.width / 2 - sr.left < ax;
+      // Leave the callout from its side nearest the card, step out level,
+      // then run straight to the card.
+      let d;
+      if (ay < r.top - sr.top - 24 && r.top - sr.top > h * 0.5) {
+        // Callouts set out below the model (a phone): leave from the top.
+        const tx = r.left - sr.left + r.width / 2, ty = r.top - sr.top - 6;
+        d = 'M' + tx.toFixed(1) + ' ' + ty.toFixed(1) + 'V' + (ty - 14).toFixed(1);
+      } else {
+        const lx = left ? r.right - sr.left + 6 : r.left - sr.left - 6;
+        const ly = r.top - sr.top + r.height / 2;
+        d = 'M' + lx.toFixed(1) + ' ' + ly.toFixed(1) + 'H' + (lx + (left ? 18 : -18)).toFixed(1);
+      }
+      L.path.setAttribute('d', d + 'L' + ax.toFixed(1) + ' ' + ay.toFixed(1));
+      L.dot.setAttribute('cx', ax.toFixed(1));
+      L.dot.setAttribute('cy', ay.toFixed(1));
+      const f = zf > zn ? (zf - L.dist) / (zf - zn) : 1;
+      L.facing = f;
+      L.el.classList.toggle('is-back', f < 0.35);
+      if (!best || f > best.facing) best = L;
+    });
+    // Only cards turned towards the viewer get a line: lines to the back of the
+    // ring crossed the whole picture. On a narrow stage only the front one.
+    const minFacing = w < 560 ? 2 : 0.55;
+    lines.forEach(function (L) {
+      const front = L === best;
+      const shown = front || L.facing >= minFacing;
+      L.el.classList.toggle('is-front', front);
+      L.path.setAttribute('class', front ? 'is-front' : shown ? '' : 'is-hidden');
+      L.dot.setAttribute('class', front ? 'is-front' : shown ? '' : 'is-hidden');
+    });
+  }
 
   function size() {
     const w = stage.clientWidth, h = stage.clientHeight;
@@ -181,6 +292,11 @@ async function mount(fig, reduced) {
   function progress() {
     if (reduced) return 1;
     const vh = window.innerHeight;
+    if (pinned) {
+      // Through the track: 0 as the stage sticks, 1 as it is about to leave.
+      const top = layoutTop(fig);
+      return clamp01(-top / Math.max(1, fig.offsetHeight - vh));
+    }
     const top = layoutTop(stage);
     // 0 as the stage's top enters the bottom of the screen, 1 once its middle
     // is 30% down: long enough for the lid, the explode and the push-in.
@@ -190,12 +306,12 @@ async function mount(fig, reduced) {
   function pose(t) {
     let radius = shot.radius, height = shot.height, angle = shot.angle * DEG, blur = 0;
     if (!reduced) {
-      const k = 1 - ease.expo(span(t, 0, CAM.arrive.until));
-      radius *= 1 + CAM.arrive.wide * k;
-      height *= 1 + CAM.arrive.crane * k;
-      angle += CAM.swing * (ease.inout(t) - 0.5) * DEG;
-      radius *= 1 - CAM.push.amount * ease.inout(span(t, CAM.push.from, 1));
-      blur = CAM.focus.blur * (1 - ease.expo(span(t, 0, CAM.focus.until)));
+      const k = 1 - ease.expo(span(t, 0, cam.arrive.until));
+      radius *= 1 + cam.arrive.wide * k;
+      height *= 1 + cam.arrive.crane * k;
+      angle += cam.swing * (ease.inout(t) - 0.5) * DEG;
+      radius *= 1 - cam.push.amount * ease.inout(span(t, cam.push.from, 1));
+      blur = cam.focus.blur * (1 - ease.expo(span(t, 0, cam.focus.until)));
     }
     angle += yaw;
     // A model may move the look-at point with t (a pan that follows it).
@@ -226,6 +342,7 @@ async function mount(fig, reduced) {
         const blur = pose(t);
         canvas.style.filter = blur > 0.25 ? 'blur(' + blur.toFixed(2) + 'px)' : '';
         renderer.render(scene, camera);
+        drawLines();
         again = true;
       }
     }

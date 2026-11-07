@@ -1893,3 +1893,103 @@
     color: var(--ink-dim);
     max-width: 62ch;
   }
+
+  /* Home: the service ring (scenes/services.js). A tall track whose stage
+     sticks while the seven cards revolve with scroll. The callouts stay put
+     and leader lines follow each card round; they are the real links. Under
+     reduced motion, with JS off or with no WebGL, the track collapses and
+     the plain tickets after it show instead. */
+  .scene3d-pin .scene3d-sticky { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .scene3d-pin:not(.is-failed) { height: 260vh; height: 260svh; }
+    .js .scene3d-pin:not(.is-failed) ~ .home-services { display: none; }
+    .js .scene3d-pin:not(.is-failed) .scene3d-sticky {
+      display: block;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100svh;
+      /* Wider than the text column where the screen allows, so the callouts
+         sit outside the ring instead of over it. Centred on the column and
+         kept 16px inside each edge of the screen. */
+      width: min(1080px, 100vw - 32px);
+      margin-left: calc(50% - min(540px, 50vw - 16px));
+    }
+  }
+  .scene3d-pin .scene3d-stage {
+    display: block;
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+  }
+  .scene3d-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .scene3d-lines path { fill: none; stroke: var(--ink-dim); stroke-width: 1; }
+  .scene3d-lines circle { fill: var(--ink-dim); }
+  .scene3d-lines path.is-front { stroke: var(--terra-text); stroke-width: 1.5; }
+  .scene3d-lines circle.is-front { fill: var(--terra-text); }
+  .scene3d-lines .is-hidden { display: none; }
+
+  .callouts {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 190px) 1fr minmax(0, 190px);
+    grid-template-rows: 1fr repeat(4, auto) 1fr;
+    gap: 14px 0;
+    pointer-events: none;
+  }
+  .callout:nth-child(-n+4) { grid-column: 1; justify-self: start; }
+  .callout:nth-child(n+5) { grid-column: 3; justify-self: end; }
+  .callout:nth-child(1), .callout:nth-child(5) { grid-row: 2; }
+  .callout:nth-child(2), .callout:nth-child(6) { grid-row: 3; }
+  .callout:nth-child(3), .callout:nth-child(7) { grid-row: 4; }
+  .callout:nth-child(4) { grid-row: 5; }
+  .callout {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 12px;
+    background: var(--card);
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.2;
+    transition: border-color 0.2s var(--e-out), color 0.2s var(--e-out), translate 0.4s var(--e-spring);
+  }
+  .callout svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: color-mix(in srgb, var(--accent) 45%, #2b2a26);
+  }
+  .callout.is-back { color: var(--ink-dim); }
+  .callout.is-front { border-color: var(--terra-text); }
+  @media (hover: hover) { .callout:hover { border-color: var(--ink); translate: 0 -1px; } }
+  .callout:focus-visible { border-color: var(--ink); }
+
+  @media (max-width: 640px) {
+    .scene3d-pin .scene3d-stage { bottom: auto; height: 58%; }
+    .callouts {
+      top: 58%;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: none;
+      grid-auto-rows: auto;
+      align-content: start;
+      gap: 8px;
+      padding-top: 4px;
+    }
+    .callout:nth-child(n) { grid-column: auto; grid-row: auto; justify-self: stretch; font-size: 12.5px; padding: 8px 10px; }
+  }
