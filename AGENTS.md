@@ -169,13 +169,26 @@ Two real 3D models:
 - Experience, Homelab record: the 2016 MacBook Pro, whose lid opens as you
   scroll, then Proxmox VE, its virtual machines and containers, and the
   services and n8n lift apart above it (`scenes/homelab.js`).
-- Home, under "Some of what I do": the seven service tickets as paper cards
-  in a ring that revolves while its section is pinned (`scenes/services.js`,
-  `data-pin`). Callouts sit still at the sides with leader lines following
-  each card; they are the real links to book that job, so they work with a
+- Home, under "Some of what I do": the seven service tickets as big paper
+  cards on a rising spiral that turns while its section is pinned, so it
+  climbs like a staircase (`scenes/services.js`, `data-pin`). Five cards
+  have a pop-up paper ledge that folds out as the card comes to the front,
+  with a small model acting out the job (`scenes/service-models.js`): a
+  jet cleaning a stripe, a sprout growing, a book opening, a print
+  building layer by layer, a RAM stick sliding in. The two dog cards carry
+  photos instead. Clicking a card or model opens a sheet (a native
+  `dialog`) with the service's description from Services and a Book this
+  job link. Callouts sit still at the sides with leader lines to the cards
+  facing the viewer; they are the real booking links, so they work with a
   keyboard and stay readable. Under reduced motion, with JS off or with no
   WebGL, the pinned track collapses and the three plain tickets show
   instead.
+- Each callout carries its card's content: `data-desc` (copied from that
+  service's ticket on Services; keep them in step), and for photo cards
+  `data-image` and `data-image-alt`. The Dog Sitting & Walking card uses
+  `images/leila-cuddle.webp` until David's collage is uploaded: compress it
+  as in Images below, save it as `images/dog-sitting-collage.webp`, and
+  point that callout's `data-image` and `data-image-alt` at it.
 
 A five-mile map and a rowing eight were tried and dropped as bloat: add a
 model only where it explains or leads somewhere the words alone do not.

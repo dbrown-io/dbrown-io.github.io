@@ -1993,3 +1993,41 @@
     }
     .callout:nth-child(n) { grid-column: auto; grid-row: auto; justify-self: stretch; font-size: 12.5px; padding: 8px 10px; }
   }
+
+  /* What a card on the ring opens when clicked: a paper note with the
+     service's own description and a way to book it. */
+  .scene3d-sheet {
+    width: min(420px, calc(100vw - 32px));
+    margin: auto;
+    padding: 26px 24px 22px;
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 3px 0 var(--line), 0 24px 48px -18px rgba(43,42,38,0.45);
+    overflow: visible;
+  }
+  .scene3d-sheet::backdrop { background: rgba(43, 42, 38, 0.35); }
+  .scene3d-sheet[open] { animation: land 0.6s var(--e-out) both; --tilt: -1.2deg; --drift: 8px; }
+  .scene3d-sheet .tape { background: var(--accent, var(--t-terra)); }
+  .sheet-photo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 6px;
+    outline: 1px solid var(--line);
+    margin-bottom: 16px;
+  }
+  .sheet-photo[hidden] { display: none; }
+  .sheet-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 21px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .sheet-desc { font-size: 15px; line-height: 1.6; color: var(--ink); }
+  .sheet-price { margin-top: 10px; font-size: 13.5px; line-height: 1.55; color: var(--ink-dim); }
+  .sheet-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .sheet-close { font-family: inherit; cursor: pointer; }

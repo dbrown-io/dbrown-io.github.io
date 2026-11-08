@@ -27,14 +27,18 @@
 //              anchor nearest the camera is the front one, and only anchors
 //              near the front get a line. kit.data lists the callouts ({ key, title,
 //              accent, icon }) so the model can build one part per callout.
-//   highlight(key|null)  called when a callout is pointed at or focused.
+//   highlight(key|null)  called when a callout or a part is pointed at.
+//   pickables  [Object3D]: parts that can be clicked. The runtime walks up
+//              from the hit mesh to the first userData.key and opens the
+//              figure's detail sheet (dialog.scene3d-sheet) filled from that
+//              key's callout: its title, data-desc, data-image and link.
 // kit.invalidate() asks for a redraw (after a texture loads, say).
 //
 // A figure with data-pin is a tall track whose stage sticks to the screen;
 // t then runs from 0 to 1 over the scroll through the track. Pinned figures
 // are not mounted under reduced motion, and the plain content they replace
 // stays (see styles.css).
-const V = '5';
+const V = '6';
 const DEG = Math.PI / 180;
 
 const clamp01 = (n) => Math.max(0, Math.min(1, n));
@@ -188,6 +192,9 @@ async function mount(fig, reduced) {
       title: (el.querySelector('.callout-title') || el).textContent.trim(),
       accent: getComputedStyle(el).getPropertyValue('--accent').trim(),
       icon: svg ? svg.outerHTML : '',
+      image: el.getAttribute('data-image') || '',
+      imageAlt: el.getAttribute('data-image-alt') || '',
+      desc: el.getAttribute('data-desc') || '',
     };
   });
   kit.invalidate = function () { last = ''; request(); };
@@ -361,19 +368,68 @@ async function mount(fig, reduced) {
   window.addEventListener('scroll', request, { passive: true });
   window.addEventListener('resize', request);
 
+  // Clicking a part: find what is under the pointer.
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  function pick(e) {
+    if (!built.pickables || !built.pickables.length) return null;
+    const r = canvas.getBoundingClientRect();
+    ndc.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(built.pickables, true)[0];
+    for (let o = hit && hit.object; o; o = o.parent) if (o.userData && o.userData.key) return o.userData.key;
+    return null;
+  }
+  let hovered = null;
+  function hover(e) {
+    if (!built.pickables) return;
+    const key = pick(e);
+    canvas.style.cursor = key ? 'pointer' : '';
+    if (key !== hovered && built.highlight) {
+      hovered = key;
+      built.highlight(key);
+      kit.invalidate();
+    }
+  }
+  canvas.addEventListener('pointerleave', function () {
+    if (hovered && built.highlight) { hovered = null; built.highlight(null); kit.invalidate(); }
+  });
+
+  // The detail sheet: a native dialog, so focus, Escape and the backdrop come
+  // for free. It is filled from the callout, the same source as the label.
+  const sheet = fig.querySelector('dialog.scene3d-sheet');
+  function openSheet(key) {
+    const el = callouts.filter(function (c) { return c.getAttribute('data-anchor') === key; })[0];
+    if (!sheet || !el || !sheet.showModal) { if (el) window.location.href = el.href; return; }
+    sheet.style.setProperty('--accent', getComputedStyle(el).getPropertyValue('--accent'));
+    sheet.querySelector('.sheet-title').textContent = (el.querySelector('.callout-title') || el).textContent.trim();
+    sheet.querySelector('.sheet-desc').textContent = el.getAttribute('data-desc') || '';
+    const img = sheet.querySelector('.sheet-photo');
+    const src = el.getAttribute('data-image');
+    img.hidden = !src;
+    if (src) { img.src = src; img.alt = el.getAttribute('data-image-alt') || ''; }
+    sheet.querySelector('.sheet-book').href = el.href;
+    sheet.showModal();
+  }
+  if (sheet) {
+    sheet.querySelector('.sheet-close').addEventListener('click', function () { sheet.close(); });
+    sheet.addEventListener('click', function (e) { if (e.target === sheet) sheet.close(); });
+  }
+
   // A sideways drag turns the model to look round it; it springs back to the
   // shot when let go. Vertical swipes still scroll (touch-action in CSS).
   if (!reduced) {
     canvas.addEventListener('pointerdown', function (e) {
       if (e.button > 0) return;
-      held = { id: e.pointerId, x: e.clientX, yaw: yaw, t: performance.now() };
+      held = { id: e.pointerId, x: e.clientX, y: e.clientY, yaw: yaw, t: performance.now(), t0: performance.now() };
       vyaw = 0;
       canvas.setPointerCapture(e.pointerId);
       canvas.classList.add('is-held');
       request();
     });
     canvas.addEventListener('pointermove', function (e) {
-      if (!held || held.id !== e.pointerId) return;
+      if (!held) { hover(e); return; }
+      if (held.id !== e.pointerId) return;
       const now = performance.now();
       const next = Math.max(-1.2, Math.min(1.2, held.yaw + (e.clientX - held.x) / Math.max(1, canvas.clientWidth) * 2.6));
       vyaw = (next - yaw) / Math.max(0.008, (now - held.t) / 1000);
@@ -383,6 +439,12 @@ async function mount(fig, reduced) {
     });
     const letGo = function (e) {
       if (!held || held.id !== e.pointerId) return;
+      // A press that barely moved is a click, not a drag: open what it hit.
+      const still = Math.abs(e.clientX - held.x) + Math.abs(e.clientY - held.y) < 6;
+      if (e.type === 'pointerup' && still && performance.now() - held.t0 < 500) {
+        const key = pick(e);
+        if (key) openSheet(key);
+      }
       if (performance.now() - held.t > 90) vyaw = 0;
       held = null;
       canvas.classList.remove('is-held');
