@@ -38,7 +38,7 @@
 // t then runs from 0 to 1 over the scroll through the track. Pinned figures
 // are not mounted under reduced motion, and the plain content they replace
 // stays (see styles.css).
-const V = '7';
+const V = '8';
 const DEG = Math.PI / 180;
 
 const clamp01 = (n) => Math.max(0, Math.min(1, n));
@@ -408,7 +408,7 @@ async function mount(fig, reduced) {
     const src = el.getAttribute('data-image');
     img.hidden = !src;
     if (src) { img.src = src; img.alt = el.getAttribute('data-image-alt') || ''; }
-    sheet.querySelector('.sheet-book').href = el.href;
+    sheet.querySelector('.sheet-book').setAttribute('href', el.getAttribute('href'));
     sheet.showModal();
   }
   if (sheet) {
