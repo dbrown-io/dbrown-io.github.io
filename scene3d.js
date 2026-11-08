@@ -38,7 +38,7 @@
 // t then runs from 0 to 1 over the scroll through the track. Pinned figures
 // are not mounted under reduced motion, and the plain content they replace
 // stays (see styles.css).
-const V = '6';
+const V = '7';
 const DEG = Math.PI / 180;
 
 const clamp01 = (n) => Math.max(0, Math.min(1, n));
@@ -275,9 +275,9 @@ async function mount(fig, reduced) {
       L.el.classList.toggle('is-back', f < 0.35);
       if (!best || f > best.facing) best = L;
     });
-    // Only cards turned towards the viewer get a line: lines to the back of the
-    // ring crossed the whole picture. On a narrow stage only the front one.
-    const minFacing = w < 560 ? 2 : 0.55;
+    // Only the front card gets a line: on a spiral the cards above and below
+    // are nearly as close, and their lines cut across the whole picture.
+    const minFacing = 2;
     lines.forEach(function (L) {
       const front = L === best;
       const shown = front || L.facing >= minFacing;
