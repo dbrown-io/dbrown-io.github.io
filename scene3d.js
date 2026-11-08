@@ -39,7 +39,7 @@
 // t then runs from 0 to 1 over the scroll through the track. Pinned figures
 // are not mounted under reduced motion, and the plain content they replace
 // stays (see styles.css).
-const V = '8';
+const V = '9';
 const DEG = Math.PI / 180;
 
 const clamp01 = (n) => Math.max(0, Math.min(1, n));

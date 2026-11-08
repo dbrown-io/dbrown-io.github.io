@@ -1,70 +1,63 @@
-// The service helix: seven big paper tickets on a rising spiral, like a spiral
-// staircase of cards. As the home page is scrolled through its pinned track the
-// helix turns and the look-at point climbs, so each card in turn comes squarely
-// to the front, then holds for a beat. The front card's pop-up ledge folds out
-// from its face and a small model (scenes/service-models.js) stands on it; the
-// dog cards carry a mounted print instead. Everything is posed from t, so
-// nothing runs on a timer. 1 unit = 10 cm.
+// The service flow. Seven paper tickets start as the old spinning helix, then
+// unwind into a tall S path (the owner's sketch) and flow along it, bottom to
+// top, one at a time holding at the bow. Left of the bow, a mounted paper
+// display ("the centre") shows the active service's model, big and turning
+// slowly, or a big mounted print for the two photo services. Everything is
+// posed from t, nothing runs on a timer. 1 unit = 10 cm.
 //
-// The ticket mirrors the site's service tickets: tape across the top, a dashed
-// left edge, an icon tile and the title, a "Quote first" pill. The middle of
-// the card is left clear for the ledge or the print.
+// t: 0 to 0.18 helix spins; 0.18 to 0.33 it unwinds into the S, the dashed
+// path draws in and the centre pops up; 0.38 to 0.98 the cards flow and each
+// service holds at the bow; the last beat holds to 1.
 export default function build(THREE, kit) {
-  const { mat, shadow, ease, span, clamp01, palette } = kit;
+  const { mat, slab, shadow, ease, span, clamp01, palette } = kit;
   const DEG = Math.PI / 180;
   const TAU = Math.PI * 2;
+  const aspectNow = () => (kit.aspect ? kit.aspect() : 1.35) || 1.35;
 
   const CW = 2.2, CH = 2.9, CT = 0.05; // card width, height, thickness
   const R = 2.9; // helix radius to the card faces
-  const RISE = 0.62; // climb per card
-  // Helix order, bottom to top: the dog card is square on at t = 0 and the
-  // photo shoots card at t = 1, with the five model cards between.
+  const RISE = 0.62; // climb per card on the helix
   const ORDER = ['dog', 'wash', 'garden', 'tutoring', 'printing', 'pc', 'photography'];
   const rank = (k) => { const i = ORDER.indexOf(k); return i < 0 ? 99 : i; };
   const items = (kit.data && kit.data.length ? kit.data.slice() : []).sort((a, b) => rank(a.key) - rank(b.key));
-  const phone = window.innerWidth < 640;
   const N = items.length || 7;
   const STEP = TAU / 7;
 
+  // Two layouts, chosen from the stage aspect. Y: half height of the S; A: how
+  // far it bows; K: lean of its ends; bowX/y0: where the bow sits; the centre
+  // (cx, cy, cs = scale of the display) and the box the whole picture must fit.
+  const LAYOUTS = {
+    wide: { Y: 3.9, A: 1.9, K: 0.5, bowX: 2.7, y0: 0, SP: 1.7, cx: -2.1, cy: 0.1, cs: 1,
+      box: { x: -0.2, y: 0, w: 8.8, h: 9.9 } },
+    tall: { Y: 4.2, A: 1.0, K: 0.25, bowX: 1.4, y0: -1.0, SP: 1.55, cx: -1.05, cy: 1.35, cs: 0.7,
+      box: { x: -0.2, y: -0.5, w: 5.0, h: 10.6 } },
+  };
+  let L = LAYOUTS.wide;
+  let fit = 1;
+  const CAM_R = 18, CAM_H = 2.4;
+  const VIS_H = 2 * CAM_R * Math.tan(16 * DEG);
+
   const root = new THREE.Group();
-  const helix = new THREE.Group();
-  root.add(helix);
+  const inner = new THREE.Group();
+  root.add(inner);
 
-  const floor = shadow(4.2, 0.26);
-  floor.position.y = -CH / 2 - 0.02;
-  root.add(floor);
-
-  // ---- shared geometry: a rounded card, thin, front facing +z
-  const r = 0.12;
-  const shape = new THREE.Shape();
-  const x0 = -CW / 2, y0 = -CH / 2;
-  shape.moveTo(x0 + r, y0);
-  shape.lineTo(x0 + CW - r, y0); shape.quadraticCurveTo(x0 + CW, y0, x0 + CW, y0 + r);
-  shape.lineTo(x0 + CW, y0 + CH - r); shape.quadraticCurveTo(x0 + CW, y0 + CH, x0 + CW - r, y0 + CH);
-  shape.lineTo(x0 + r, y0 + CH); shape.quadraticCurveTo(x0, y0 + CH, x0, y0 + CH - r);
-  shape.lineTo(x0, y0 + r); shape.quadraticCurveTo(x0, y0, x0 + r, y0);
-  const cardGeo = new THREE.ExtrudeGeometry(shape, { depth: CT, bevelEnabled: false, curveSegments: 4 });
-  cardGeo.translate(0, 0, -CT / 2);
+  // ---- shared geometry
+  function rrGeo(w, h, rad, d) {
+    const s = new THREE.Shape();
+    const x0 = -w / 2, y0 = -h / 2;
+    s.moveTo(x0 + rad, y0);
+    s.lineTo(x0 + w - rad, y0); s.quadraticCurveTo(x0 + w, y0, x0 + w, y0 + rad);
+    s.lineTo(x0 + w, y0 + h - rad); s.quadraticCurveTo(x0 + w, y0 + h, x0 + w - rad, y0 + h);
+    s.lineTo(x0 + rad, y0 + h); s.quadraticCurveTo(x0, y0 + h, x0, y0 + h - rad);
+    s.lineTo(x0, y0 + rad); s.quadraticCurveTo(x0, y0, x0 + rad, y0);
+    const g = new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: false, curveSegments: 4 });
+    g.translate(0, 0, -d / 2);
+    return g;
+  }
+  const cardGeo = rrGeo(CW, CH, 0.12, CT);
   const faceGeo = new THREE.PlaneGeometry(CW - 0.02, CH - 0.02);
   const tapeGeo = new THREE.BoxGeometry(0.9, 0.26, 0.012);
   const bodyMat = mat('body', { emissive: 0.18 });
-  const ledgeMat = mat('paper', { emissive: 0.35 });
-
-  // pop-up ledge: hinged at its back edge (z = 0), extending along +z when flat out
-  const LW = 1.7, LD = 0.95, LT = 0.035;
-  const ledgeGeo = new THREE.BoxGeometry(LW, LT, LD);
-  ledgeGeo.translate(0, 0, LD / 2);
-  const lipGeo = new THREE.BoxGeometry(LW, LT + 0.03, 0.045);
-  const hingeGeo = new THREE.BoxGeometry(LW * 0.62, 0.014, 0.16);
-  const HINGE_Y = -CH / 2 + CH * 0.4; // about 40% up the card
-  const MODEL_SCALE = 0.98;
-
-  // mounted print slot
-  const PW = 1.72, PH = 1.5, PY = -0.14, PX = 0.05;
-  const borderGeo = new THREE.PlaneGeometry(PW + 0.16, PH + 0.16);
-  const photoGeo = new THREE.PlaneGeometry(PW, PH);
-  const cornerGeo = new THREE.BoxGeometry(0.4, 0.13, 0.01);
-  const borderMat = mat('#ffffff', { emissive: 0.22 });
 
   // ---- canvas helpers
   const CWPX = 640, CHPX = 844;
@@ -145,6 +138,17 @@ export default function build(THREE, kit) {
     const first = ty + ts / 2 - ((lines.length - 1) * 54) / 2 + 15;
     lines.forEach((ln, i) => g.fillText(ln, lx, first + i * 54));
 
+    // description, the middle of the card
+    g.font = "400 34px 'Inter', sans-serif";
+    g.fillStyle = css(rgb(palette.dim || '#5b5850'));
+    g.textBaseline = 'alphabetic';
+    const dl = wrap(g, item.desc || '', CWPX - 66 - 54);
+    const maxL = 9;
+    dl.slice(0, maxL).forEach((ln, i) => {
+      if (i === maxL - 1 && dl.length > maxL) ln = ln.replace(/[ ,.;:]*$/, '') + '...';
+      g.fillText(ln, 66, 310 + i * 47);
+    });
+
     // price badge
     g.font = "500 31px 'IBM Plex Mono', monospace";
     const label = 'Quote first';
@@ -181,13 +185,11 @@ export default function build(THREE, kit) {
     depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
   });
 
-  // ---- the cards
-  const cards = [];
-  const anchors = [];
-  const pickables = [];
+
   const fontsReady = Promise.all([
     document.fonts.load("700 46px 'Space Grotesk'"),
     document.fonts.load("500 31px 'IBM Plex Mono'"),
+    document.fonts.load("400 34px 'Inter'"),
   ]).catch(() => {});
 
   // The photo, cover-cropped to the slot, drawn into a canvas texture.
@@ -206,22 +208,17 @@ export default function build(THREE, kit) {
     img.src = src;
   }
 
+  // ---- the cards
+  const cards = [];
+  const pickables = [];
   for (let i = 0; i < N; i++) {
-    const item = items[i] || { key: 'card' + i, title: '', accent: '#b3492f', icon: '' };
-    const el = document.querySelector('[data-anchor="' + item.key + '"]');
-    const image = item.image || (el && el.getAttribute('data-image')) || '';
-    const phi = i * STEP;
-    const tilt = (i % 2 ? 1 : -1) * (1.2 + (i % 3) * 0.5) * DEG;
+    const item = items[i] || { key: 'card' + i, title: '', desc: '', accent: '#b3492f', icon: '' };
     const holder = new THREE.Group();
-    holder.rotation.y = phi;
     holder.userData.key = item.key;
-    const pose = new THREE.Group(); // tilt lives here so highlight can move the holder freely
-    pose.rotation.z = tilt;
-    holder.add(pose);
 
     const card = new THREE.Mesh(cardGeo, bodyMat);
     card.userData.key = item.key;
-    pose.add(card);
+    holder.add(card);
     pickables.push(card);
 
     const canvas = document.createElement('canvas');
@@ -234,75 +231,19 @@ export default function build(THREE, kit) {
       transparent: true, roughness: 0.55, metalness: 0.1,
       depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
     });
-    const front = new THREE.Mesh(faceGeo, frontMat);
-    front.position.z = CT / 2 + 0.002;
-    pose.add(front);
+    const face = new THREE.Mesh(faceGeo, frontMat);
+    face.position.z = CT / 2 + 0.002;
+    holder.add(face);
     const back = new THREE.Mesh(faceGeo, backMat);
     back.rotation.y = Math.PI;
     back.position.z = -CT / 2 - 0.002;
-    pose.add(back);
+    holder.add(back);
 
-    // tape: translucent accent, a little crooked
     const tape = new THREE.Mesh(tapeGeo, mat(item.accent || 'accent', { opacity: 0.78 }));
     tape.position.set((i % 3 - 1) * 0.1, CH / 2 - 0.01, 0.008);
     tape.rotation.z = ((i * 37) % 7 - 3) * 1.6 * DEG;
-    pose.add(tape);
+    holder.add(tape);
 
-    const anchor = new THREE.Group();
-    anchor.position.set(0, CH / 2 + 0.2, 0);
-    pose.add(anchor);
-    anchors.push({ key: item.key, object: anchor });
-
-    const c = { key: item.key, holder, pose, phi, anchor, ledge: null, mount: null, model: null, kind: image ? 'print' : 'model', k: 0 };
-
-    if (image) {
-      // a mounted print: card-coloured border, photo, a tape corner
-      const border = new THREE.Mesh(borderGeo, borderMat);
-      border.position.set(PX, PY, CT / 2 + 0.012);
-      border.rotation.z = (i % 2 ? 1 : -1) * 1.4 * DEG;
-      border.userData.key = item.key;
-      pose.add(border);
-      pickables.push(border);
-      const pc = document.createElement('canvas');
-      pc.width = 864; pc.height = Math.round(864 * PH / PW);
-      const pg2 = pc.getContext('2d');
-      pg2.fillStyle = css(mix(rgb(item.accent || '#b3492f'), WHITE, 0.25));
-      pg2.fillRect(0, 0, pc.width, pc.height);
-      const ptex = makeTexture(pc);
-      ptex.anisotropy = 8;
-      const photo = new THREE.Mesh(photoGeo, new THREE.MeshBasicMaterial({ map: ptex, color: '#ffffff' }));
-      photo.position.z = 0.004;
-      photo.userData.key = item.key;
-      border.add(photo);
-      pickables.push(photo);
-      const corner = new THREE.Mesh(cornerGeo, mat(item.accent || 'accent', { opacity: 0.8 }));
-      corner.position.set(-PW / 2 - 0.02, PH / 2 + 0.02, 0.012);
-      corner.rotation.z = 38 * DEG;
-      border.add(corner);
-      loadPhoto(image, photo, ptex, pc);
-    } else {
-      // pop-up ledge, hinged at the card face
-      const mount = new THREE.Group();
-      mount.position.set(0, HINGE_Y, CT / 2 + 0.006);
-      pose.add(mount);
-      const ledge = new THREE.Mesh(ledgeGeo, ledgeMat);
-      ledge.userData.key = item.key;
-      mount.add(ledge);
-      const lip = new THREE.Mesh(lipGeo, mat(item.accent || 'accent'));
-      lip.position.set(0, 0, LD - 0.02);
-      mount.add(lip);
-      const hinge = new THREE.Mesh(hingeGeo, mat(item.accent || 'accent', { opacity: 0.78 }));
-      hinge.position.set(0, 0.012, 0.03);
-      mount.add(hinge);
-      const modelHolder = new THREE.Group();
-      modelHolder.userData.key = item.key;
-      pose.add(modelHolder);
-      c.mount = mount;
-      c.modelHolder = modelHolder;
-      pickables.push(ledge);
-    }
-
-    // draw once fonts and the icon have loaded (async: never during build)
     const done = () => { tex.needsUpdate = true; if (kit.invalidate) kit.invalidate(); };
     const paint = (img) => { fontsReady.then(() => { drawFront(g, item, img); done(); }); };
     if (item.icon) {
@@ -318,26 +259,130 @@ export default function build(THREE, kit) {
       img.src = url;
     } else paint(null);
 
-    pose.position.set(0, 0, 0);
-    helix.add(holder);
-    cards.push(c);
+    const el = document.querySelector('[data-anchor="' + item.key + '"]');
+    const image = item.image || (el && el.getAttribute('data-image')) || '';
+    inner.add(holder);
+    cards.push({
+      key: item.key, holder, item, frontMat, image,
+      tilt: (i % 2 ? 1 : -1) * (1.2 + (i % 3) * 0.5) * DEG,
+      model: null, stand: null, print: null,
+    });
   }
 
-  // ---- models, added when their module resolves (it may be missing)
+  // ---- the path: short dashes along the S
+  const NDASH = 54;
+  const dashMat = new THREE.MeshStandardMaterial({
+    color: palette.trim || '#cfc9ba', roughness: 0.6, metalness: 0.05, transparent: true, opacity: 0.85,
+  });
+  const dashGeo = new THREE.BoxGeometry(0.075, 1, 0.02);
+  const dashes = [];
+  for (let j = 0; j < NDASH; j++) {
+    const d = new THREE.Mesh(dashGeo, dashMat);
+    inner.add(d);
+    dashes.push(d);
+  }
+  let dashLayout = null;
+
+  // x on the S at height yy above the bow, and its slope dx/dy. Past the ends
+  // it carries on straight so cards can slide in from below and out above.
+  function sAt(yy) {
+    const s = Math.max(-1, Math.min(1, yy / L.Y));
+    const bx = L.bowX - L.A;
+    const x = bx + L.A * (1 - s * s) + L.K * s;
+    const slope = (-2 * L.A * s + L.K) / L.Y;
+    if (Math.abs(yy) > L.Y) return { x: x + slope * (yy - Math.sign(yy) * L.Y), slope };
+    return { x, slope };
+  }
+
+  // ---- the centre: a mounted paper display with a plinth, local origin at the
+  // middle of the backing card
+  const centre = new THREE.Group();
+  inner.add(centre);
+  const PNW = 4.0, PNH = 3.1;
+  const edge = new THREE.Mesh(rrGeo(PNW + 0.08, PNH + 0.08, 0.2, 0.04), mat('dark'));
+  edge.position.z = -0.03;
+  centre.add(edge);
+  const panel = new THREE.Mesh(rrGeo(PNW, PNH, 0.18, 0.05), bodyMat);
+  panel.rotation.z = 0;
+  centre.add(panel);
+  const plinthBase = new THREE.Mesh(slab(3.6, 2.0, 0.05, 0.12, 'dark').geometry, mat('dark'));
+  const plinth = slab(3.5, 1.92, 0.15, 0.1, 'paper', { emissive: 0.35 });
+  const PLY = -PNH / 2 + 0.08, PLZ = 1.0, PLTOP = PLY + 0.15;
+  plinthBase.position.set(0, PLY - 0.045, PLZ);
+  plinth.position.set(0, PLY, PLZ);
+  centre.add(plinthBase, plinth);
+  const tapeMat = new THREE.MeshStandardMaterial({
+    color: '#b3492f', roughness: 0.55, metalness: 0.1, transparent: true, opacity: 0.8,
+  });
+  const ptape = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.3, 0.012), tapeMat);
+  ptape.position.set(-0.5, PNH / 2 - 0.02, 0.032);
+  ptape.rotation.z = -2.5 * DEG;
+  centre.add(ptape);
+  const ptape2 = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.2, 0.01), tapeMat);
+  ptape2.position.set(0.4, PLTOP + 0.01, PLZ + 0.9);
+  ptape2.rotation.z = 1.5 * DEG;
+  centre.add(ptape2);
+  const floor = shadow(1.9, 0.22);
+  floor.position.set(0, PLTOP + 0.003, PLZ);
+  centre.add(floor);
+  [panel, plinth, edge].forEach((m) => { pickables.push(m); });
+
+  const MS = 3.0; // model scale on the plinth
+  const PW = 2.9, PH = 2.5;
+  const photoCache = {};
+  function makePrint(c) {
+    const g = new THREE.Group();
+    g.userData.key = c.key;
+    const body = new THREE.Mesh(new THREE.BoxGeometry(PW + 0.28, PH + 0.28, 0.06), mat('#ffffff', { emissive: 0.22 }));
+    body.position.y = (PH + 0.28) / 2;
+    g.add(body);
+    const pc = document.createElement('canvas');
+    pc.width = 864; pc.height = Math.round(864 * PH / PW);
+    const p2 = pc.getContext('2d');
+    p2.fillStyle = css(mix(rgb(c.item.accent || '#b3492f'), WHITE, 0.25));
+    p2.fillRect(0, 0, pc.width, pc.height);
+    const ptex = makeTexture(pc);
+    ptex.anisotropy = 8;
+    const photo = new THREE.Mesh(new THREE.PlaneGeometry(PW, PH), new THREE.MeshBasicMaterial({ map: ptex, color: '#ffffff' }));
+    photo.position.set(0, (PH + 0.28) / 2, 0.034);
+    g.add(photo);
+    const corner = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.18, 0.01), tapeMat);
+    corner.position.set(-PW / 2 - 0.02, PH + 0.28 - 0.05, 0.04);
+    corner.rotation.z = 38 * DEG;
+    g.add(corner);
+    loadPhoto(c.image, photo, ptex, pc);
+    return g;
+  }
+
+  cards.forEach((c) => {
+    const stand = new THREE.Group();
+    stand.position.set(0, PLTOP, PLZ);
+    stand.visible = false;
+    c.stand = stand;
+    centre.add(stand);
+    if (c.image) {
+      c.print = makePrint(c);
+      c.print.rotation.x = -0.1;
+      stand.add(c.print);
+      c.pick = c.print;
+    }
+  });
+
+  // models, added when their module resolves (it may be missing)
   const base = new URL('./service-models.js', import.meta.url);
   base.search = new URL(import.meta.url).search;
   import(base.href).then((mod) => {
     const models = (mod && mod.models) || {};
     cards.forEach((c) => {
       const m = models[c.key];
-      if (!m || !c.modelHolder || c.model) return;
+      if (c.image || !m || c.model) return;
       try {
         const built = m.build(THREE, kit);
         if (!built || !built.group) return;
         built.group.userData.key = c.key;
-        c.modelHolder.add(built.group);
+        c.stand.add(built.group);
         c.model = built;
-        pickables.push(built.group);
+        c.pick = built.group;
       } catch (err) {
         console.warn('Service model "' + c.key + '" could not be built.', err);
       }
@@ -346,66 +391,154 @@ export default function build(THREE, kit) {
   }).catch(() => {});
 
   // ---- posing
-  // Which card is in front: t runs 0 to 1 over cards 0 to N - 1, held a beat on
-  // each (mostly stepped, a little linear so it never freezes dead).
-  function front(t) {
-    const x = clamp01(t) * (N - 1);
-    const n = Math.min(N - 2, Math.floor(x));
-    const f = x - n;
-    const stepped = n + ease.smooth(ease.smooth(f));
-    return stepped * 0.82 + x * 0.18;
+  const qA = new THREE.Quaternion(), qB = new THREE.Quaternion(), qC = new THREE.Quaternion();
+  const AX_Y = new THREE.Vector3(0, 1, 0), AX_Z = new THREE.Vector3(0, 0, 1);
+  const compose = (out, yaw, rz) => {
+    qA.setFromAxisAngle(AX_Y, yaw);
+    qB.setFromAxisAngle(AX_Z, rz);
+    return out.copy(qA).multiply(qB);
+  };
+  const hq = new THREE.Quaternion(), pq = new THREE.Quaternion();
+
+  // Which card is at the bow: 0 to N - 1, held a beat on each.
+  function flow(t) {
+    const s = span(t, 0.38, 0.98) * (N - 1);
+    const n = Math.min(N - 2, Math.floor(s));
+    const f = s - n;
+    return (n + ease.smooth(ease.smooth(f))) * 0.85 + s * 0.15;
   }
 
   let current = null;
-  let lastIdx = 0;
-  function layout(idx) {
-    cards.forEach((c, i) => {
-      const hi = c.key === current;
-      const out = R + (hi ? 0.18 : 0);
-      c.holder.position.set(Math.sin(c.phi) * out, i * RISE + (hi ? 0.06 : 0), Math.cos(c.phi) * out);
-    });
+  let activeKey = null;
+
+  function applyLayout() {
+    const asp = aspectNow();
+    L = asp < 0.9 ? LAYOUTS.tall : LAYOUTS.wide;
+    const visW = VIS_H * asp;
+    // Fitting the whole box left the busy middle small: zoom in and let the
+    // tapered ends of the path run off the top and bottom, like a conveyor.
+    fit = Math.min((VIS_H * 0.96) / L.box.h, (visW * 0.96) / L.box.w) * (L === LAYOUTS.tall ? 1.15 : 1.4);
+    root.scale.setScalar(fit);
+    inner.position.set(-L.box.x, -L.box.y, 0);
+    centre.position.set(L.cx, L.cy, 0);
+    if (dashLayout !== L) {
+      dashLayout = L;
+      const seg = (2 * L.Y) / NDASH;
+      dashes.forEach((d, j) => {
+        const yy = -L.Y + (j + 0.5) * seg;
+        const p = sAt(yy);
+        d.position.set(p.x, L.y0 + yy, -0.7);
+        d.rotation.z = -Math.atan(p.slope);
+        d.userData.len = seg * 0.52;
+        d.userData.at = j / NDASH;
+      });
+    }
+    return visW / fit;
   }
 
   function update(t) {
-    const idx = front(t);
-    lastIdx = idx;
-    helix.rotation.y = -idx * STEP;
-    layout(idx);
-    cards.forEach((c, i) => {
-      const d = Math.abs(i - idx);
-      const k = 1 - ease.smooth(span(d, 0.0, 0.8));
-      c.k = k;
-      if (!c.mount) return;
-      const fold = (1 - ease.smooth(k)) * (Math.PI / 2);
-      c.mount.rotation.x = -fold;
-      const mid = LD / 2;
-      const m = c.modelHolder;
-      if (c.model) {
-        const pop = ease.smooth(span(k, 0.2, 1));
-        m.visible = pop > 0.01;
-        if (m.visible) {
-          m.position.set(0, HINGE_Y + Math.sin(fold) * mid + LT / 2, CT / 2 + 0.006 + Math.cos(fold) * mid);
-          m.scale.setScalar(MODEL_SCALE * Math.max(0.001, pop));
-          try { c.model.update(k, t); } catch (err) { m.visible = false; }
-        }
-      }
+    const visWroot = applyLayout();
+    const cs = L.cs;
+    const f = flow(t);
+    const hs = Math.min(1.3, (0.88 * visWroot) / (2 * R + CW));
+    const lin = span(t, 0, 0.34);
+    const spin = TAU * 1.15 * (0.6 * lin + 0.4 * ease.smooth(lin));
+    const bx = L.box.x, by = L.box.y;
+
+    const drawn = ease.smooth(span(t, 0.17, 0.3));
+    dashes.forEach((d) => {
+      const on = span(drawn, d.userData.at, d.userData.at + 0.12);
+      d.visible = on > 0.01;
+      d.scale.set(1, d.userData.len * Math.max(0.001, on), 1);
     });
+
+    let best = 0, bestK = -1;
+    cards.forEach((c, i) => {
+      const x = f - i;
+      const k = 1 - ease.smooth(span(Math.abs(x), 0.05, 0.7));
+      c.k = k;
+      if (k > bestK) { bestK = k; best = i; }
+      const hi = c.key === current ? 1 : 0;
+
+      // helix place
+      const ang = i * STEP - spin;
+      const hx = bx + Math.sin(ang) * R * hs, hy = by + (i - 3) * RISE * hs, hz = Math.cos(ang) * R * hs;
+      compose(hq, ang, c.tilt);
+      // path place
+      const yy = x * L.SP;
+      const p = sAt(yy);
+      const ay = Math.abs(yy);
+      const taper = 1 - ease.smooth(span(ay, L.Y + 0.1, L.Y + 1.3));
+      const base = 0.74 - 0.16 * ease.smooth(span(ay, 0, L.Y));
+      const ps = (base + 0.14 * k + 0.04 * hi) * taper;
+      const pz = 0.55 * k - 0.04 * ay + 0.2 * hi;
+      const at = Math.atan(p.slope);
+      compose(pq, -0.2 * at * (1 - k * 0.6), -at * 0.6);
+
+      const u = ease.smooth(span(t, 0.18 + 0.012 * i, 0.26 + 0.012 * i));
+      const lift = Math.sin(Math.PI * u) * 0.3;
+      c.holder.position.set(hx + (p.x - hx) * u, hy + (L.y0 + yy - hy) * u, hz + (pz - hz) * u + lift);
+      qC.copy(hq).slerp(pq, u);
+      c.holder.quaternion.copy(qC);
+      const sc = hs + (ps - hs) * u;
+      c.holder.scale.setScalar(Math.max(0.0001, sc));
+      c.holder.visible = sc > 0.01;
+      const dim = 0.86 + 0.14 * Math.max(k, 1 - u);
+      c.frontMat.color.setScalar(dim);
+    });
+
+    // the centre pops up as the helix finishes unwinding
+    const cin = ease.back(span(t, 0.24, 0.36));
+    centre.scale.setScalar(Math.max(0.0001, cs * cin));
+    centre.visible = cin > 0.005;
+
+    const act = Math.max(0, Math.min(N - 1, Math.round(f)));
+    if (activeKey !== cards[act].key) {
+      activeKey = cards[act].key;
+      tapeMat.color.set(cards[act].item.accent || '#b3492f');
+    }
+    [panel, plinth, edge].forEach((m) => { m.userData.key = activeKey; });
+    // only the model on show can be clicked
+    for (let n = pickables.length - 1; n >= N + 3; n--) pickables.pop();
+    let shownMax = 0;
+    cards.forEach((c, i) => {
+      const x = f - i;
+      let m;
+      if (i === 0) m = x <= 0 ? ease.back(span(t, 0.3, 0.42)) : 1 - ease.smooth(span(x, 0.1, 0.4));
+      else if (x < 0) m = ease.back(span(x, -0.45, -0.1));
+      else m = 1 - ease.smooth(span(x, 0.1, 0.4));
+      const k = 1 - ease.smooth(span(Math.abs(x), 0.05, 0.55));
+      const out = x > 0 ? ease.smooth(span(x, 0.1, 0.4)) : 0;
+      const live = m > 0.01 && !(i === 0 && t < 0.3);
+      c.stand.visible = live;
+      if (!live) return;
+      shownMax = Math.max(shownMax, m);
+      c.stand.scale.setScalar(MS * Math.max(0.001, m));
+      c.stand.position.y = PLTOP - 0.7 * out;
+      if (c.print) {
+        c.stand.scale.setScalar(Math.max(0.001, m));
+        c.print.rotation.y = 0.14 * Math.sin(t * 22 + i);
+      } else if (c.model) {
+        c.model.group.rotation.y = 0.5 + t * 7;
+        try { c.model.update(k, t); } catch (err) { c.stand.visible = false; }
+      }
+      if (c.pick && m > 0.3) pickables.push(c.pick);
+    });
+    floor.scale.setScalar(Math.max(0.001, shownMax));
   }
 
   function highlight(key) {
     current = key || null;
-    layout(lastIdx);
+    if (kit.invalidate) kit.invalidate();
   }
 
   update(0);
 
   return {
     root,
-    shot: { radius: phone ? 7.6 : 7.9, height: phone ? 3.1 : 2.9, angle: 0, target: [0, 0, R] },
-    // The camera looks at the front card's face and climbs with the helix.
-    target: (t) => [0, front(t) * RISE, R],
-    camera: { swing: 10 },
-    anchors,
+    shot: { radius: CAM_R, height: CAM_H, angle: 0, target: [0, 0, 0] },
+    target: () => [0, 0, 0],
+    camera: { swing: 0, push: { from: 0.78, amount: 0 } },
     pickables,
     highlight,
     update,
