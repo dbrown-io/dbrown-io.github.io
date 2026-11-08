@@ -33,6 +33,7 @@
 //              figure's detail sheet (dialog.scene3d-sheet) filled from that
 //              key's callout: its title, data-desc, data-image and link.
 // kit.invalidate() asks for a redraw (after a texture loads, say).
+// kit.aspect() is the stage's width over height, current at update time.
 //
 // A figure with data-pin is a tall track whose stage sticks to the screen;
 // t then runs from 0 to 1 over the scroll through the track. Pinned figures
@@ -198,6 +199,8 @@ async function mount(fig, reduced) {
     };
   });
   kit.invalidate = function () { last = ''; request(); };
+  // The stage's width over height, for models that frame themselves to it.
+  kit.aspect = function () { return camera.aspect; };
   const built = model.default(THREE, kit);
   scene.add(built.root);
   const shot = Object.assign({ radius: 10, height: 4, angle: 20, target: [0, 0.6, 0] }, built.shot || {});

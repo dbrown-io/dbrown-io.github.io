@@ -170,19 +170,19 @@ Two real 3D models:
   scroll, then Proxmox VE, its virtual machines and containers, and the
   services and n8n lift apart above it (`scenes/homelab.js`).
 - Home, under "Some of what I do": the seven service tickets as big paper
-  cards on a rising spiral that turns while its section is pinned, so it
-  climbs like a staircase (`scenes/services.js`, `data-pin`). Five cards
-  have a pop-up paper ledge that folds out as the card comes to the front,
-  with a small model acting out the job (`scenes/service-models.js`): a
-  jet cleaning a stripe, a sprout growing, a book opening, a print
-  building layer by layer, a RAM stick sliding in. The two dog cards carry
-  photos instead. Clicking a card or model opens a sheet (a native
-  `dialog`) with the service's description from Services and a Book this
-  job link. Callouts sit still at the sides with leader lines to the cards
-  facing the viewer; they are the real booking links, so they work with a
-  keyboard and stay readable. Under reduced motion, with JS off or with no
-  WebGL, the pinned track collapses and the three plain tickets show
-  instead.
+  cards (`scenes/services.js`, `data-pin`). While the section is pinned
+  they open as a spinning helix, unwind into an S-shaped path (David's
+  sketch, 2026-11-08) and flow along it; the card at the bow of the S is
+  the active one, and the centre beside it shows its model
+  (`scenes/service-models.js`: a car washed clean, a sprout growing, a book
+  opening, a pawn printing, a RAM stick sliding in) or, for the two dog
+  services, its photo. Clicking a card or the centre opens a sheet (a
+  native `dialog`) with the service's description from Services and a Book
+  this job link. The visible labels and leader lines were removed at
+  David's request; the callout links stay in the page, hidden until
+  focused, so keyboard and screen reader users can still book each job.
+  Under reduced motion, with JS off or with no WebGL, the pinned track
+  collapses and the three plain tickets show instead.
 - Each callout carries its card's content: `data-desc` (copied from that
   service's ticket on Services; keep them in step), and for photo cards
   `data-image` and `data-image-alt`. The Dog Sitting & Walking card uses
